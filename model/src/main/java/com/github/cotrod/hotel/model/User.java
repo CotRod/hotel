@@ -3,6 +3,7 @@ package com.github.cotrod.hotel.model;
 public class User {
     private String login;
     private String password;
+    // оставить висеть этот пул реквест
 
     public User(String login, String password) {
         this.login = login;
