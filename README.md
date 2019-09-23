@@ -20,14 +20,5 @@
 |signup/|Страница Регистрации|
 |userHome/|Домашняя страница|
 ###### **Попасть на домашнюю страницу можно только пройдя авторизацию или создав нового пользователя*
-
----
-```mermaid
-graph LR
-A[Login Page]--Signup Link-->B[Signup Page]
-A -- Correct Data -->C[UserHome Page]
-B -- Correct Data -->C
-C -- Logout Link -->A
-```
-  
+###### ***Для входа можно использовать login: admin Password: admin*
 :sunglasses:
