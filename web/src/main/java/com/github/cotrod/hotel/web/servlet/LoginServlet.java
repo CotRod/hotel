@@ -14,7 +14,7 @@ import java.io.IOException;
 import static com.github.cotrod.hotel.web.WebUtils.forward;
 import static com.github.cotrod.hotel.web.WebUtils.redirect;
 
-@WebServlet(urlPatterns = "/login")
+@WebServlet(urlPatterns = {"/login", "/"})
 public class LoginServlet extends HttpServlet {
     private AuthService authService = DefaultAuthService.getInstance();
 
