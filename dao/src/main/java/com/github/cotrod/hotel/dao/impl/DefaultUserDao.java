@@ -17,6 +17,7 @@ public class DefaultUserDao implements UserDao {
     private DefaultUserDao(){
         this.users = new ArrayList<>();
         this.usersMap = new HashMap<>();
+        save(new User("admin","admin"));
     }
 
     public static UserDao getInstance(){
