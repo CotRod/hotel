@@ -26,10 +26,7 @@ public class DefaultAuthService implements AuthService {
     @Override
     public boolean isUserExist(String login, String password) {
         User user = getUserByLogin(login);
-        if (user != null && user.getPassword().equals(password)) {
-            return true;
-        }
-        return false;
+        return user != null && user.getPassword().equals(password);
     }
 
     @Override
