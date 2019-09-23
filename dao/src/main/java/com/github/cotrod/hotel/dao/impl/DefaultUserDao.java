@@ -9,13 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 public class DefaultUserDao implements UserDao {
-    private List<User> users;
     private Map<String,User> usersMap;
 
     private static volatile UserDao instance;
 
     private DefaultUserDao(){
-        this.users = new ArrayList<>();
         this.usersMap = new HashMap<>();
         save(new User("admin","admin"));
     }
@@ -32,13 +30,7 @@ public class DefaultUserDao implements UserDao {
     }
 
     @Override
-    public List<User> getUsers() {
-        return users;
-    }
-
-    @Override
     public void save(User user) {
-        users.add(user);
         usersMap.put(user.getLogin(),user);
     }
 

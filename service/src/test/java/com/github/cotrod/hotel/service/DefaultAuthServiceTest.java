@@ -11,12 +11,9 @@ public class DefaultAuthServiceTest {
         Assertions.assertEquals("admin", DefaultAuthService.getInstance().getUserByLogin("admin").getLogin());
     }
     @Test
-    public void isExist(){
+    public void isValidUser(){
+        Assertions.assertFalse(DefaultAuthService.getInstance().isValidUser("wrongLogin","admin"));
+        Assertions.assertFalse(DefaultAuthService.getInstance().isValidUser("admin","wrongPassword"));
         Assertions.assertTrue(DefaultAuthService.getInstance().isValidUser("admin","admin"));
-    }
-    @Test
-    public void isNotExist(){
-        Assertions.assertFalse(DefaultAuthService.getInstance().isValidUser("User","user"));
-        Assertions.assertFalse(DefaultAuthService.getInstance().isValidUser("Admin","admin"));
     }
 }
