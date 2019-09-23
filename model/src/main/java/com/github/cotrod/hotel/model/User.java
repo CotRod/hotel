@@ -3,7 +3,7 @@ package com.github.cotrod.hotel.model;
 public class User {
     private String login;
     private String password;
-
+// и этот тоже
     public User(String login, String password) {
         this.login = login;
         this.password = password;
