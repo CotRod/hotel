@@ -13,14 +13,15 @@ public class DefaultAuthService implements AuthService {
     }
 
     public static AuthService getInstance() {
-        if (instance == null) {
+        AuthService localInstance = instance;
+        if (localInstance == null) {
             synchronized (AuthService.class) {
-                if (instance == null) {
-                    instance = new DefaultAuthService();
+                if (localInstance == null) {
+                    instance = localInstance = new DefaultAuthService();
                 }
             }
         }
-        return instance;
+        return localInstance;
     }
 
     @Override

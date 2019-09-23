@@ -9,29 +9,31 @@ import java.util.List;
 import java.util.Map;
 
 public class DefaultUserDao implements UserDao {
-    private Map<String,User> usersMap;
+    private Map<String, User> usersMap;
 
     private static volatile UserDao instance;
 
-    private DefaultUserDao(){
+    private DefaultUserDao() {
         this.usersMap = new HashMap<>();
-        save(new User("admin","admin"));
+        save(new User("admin", "admin"));
     }
 
-    public static UserDao getInstance(){
-        if(instance==null){
-            synchronized (UserDao.class){
-                if(instance==null){
-                    instance = new DefaultUserDao();
+    public static UserDao getInstance() {
+        UserDao localInstance = instance;
+        if (localInstance == null) {
+            synchronized (UserDao.class) {
+                localInstance = instance;
+                if (localInstance == null) {
+                    instance = localInstance = new DefaultUserDao();
                 }
             }
         }
-        return instance;
+        return localInstance;
     }
 
     @Override
     public void save(User user) {
-        usersMap.put(user.getLogin(),user);
+        usersMap.put(user.getLogin(), user);
     }
 
     @Override
