@@ -33,7 +33,7 @@ public class DefaultUserDao implements UserDao {
 
     @Override
     public void save(User user) {
-        UserDao dataBase = DefaultUserDao.getInstance();
+        MySqlDataBase dataBase = new MySqlDataBase();
         try (Connection connection = dataBase.connect();
              PreparedStatement statement = connection.prepareStatement("insert into user(login,password) values (?,?)")){
             statement.setString(1,user.getLogin());
@@ -46,8 +46,8 @@ public class DefaultUserDao implements UserDao {
 
     @Override
     public User getUserByLogin(String login) {
-        UserDao dateBase = DefaultUserDao.getInstance();
-        try (Connection connection = dateBase.connect();
+        MySqlDataBase dataBase = new MySqlDataBase();
+        try (Connection connection = dataBase.connect();
             PreparedStatement statement = connection.prepareStatement("select * from user where login =?")){
             statement.setString(1,login);
             try (ResultSet rs = statement.executeQuery()){
