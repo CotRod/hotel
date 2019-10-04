@@ -48,7 +48,7 @@ public class DefaultUserDao implements UserDao {
     public User getUserByLogin(String login) {
         UserDao dateBase = DefaultUserDao.getInstance();
         try (Connection connection = dateBase.connect();
-        PreparedStatement statement = connection.prepareStatement("select * from user where login =?")){
+            PreparedStatement statement = connection.prepareStatement("select * from user where login =?")){
             statement.setString(1,login);
             try (ResultSet rs = statement.executeQuery()){
                 if(rs.next()){
