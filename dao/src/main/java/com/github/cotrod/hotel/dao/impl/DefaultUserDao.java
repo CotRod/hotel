@@ -3,8 +3,10 @@ package com.github.cotrod.hotel.dao.impl;
 import com.github.cotrod.hotel.dao.UserDao;
 import com.github.cotrod.hotel.model.User;
 
-import java.sql.*;
-import java.util.ResourceBundle;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class DefaultUserDao implements UserDao {
 
@@ -23,14 +25,6 @@ public class DefaultUserDao implements UserDao {
         return localInstance;
     }
 
-    public Connection connect() throws SQLException {
-        ResourceBundle resource = ResourceBundle.getBundle("db");
-        String url = resource.getString("url");
-        String user = resource.getString("user");
-        String password = resource.getString("password");
-        return DriverManager.getConnection(url,user,password);
-    }
-
     @Override
     public void save(User user) {
         MySqlDataBase dataBase = new MySqlDataBase();
@@ -39,7 +33,11 @@ public class DefaultUserDao implements UserDao {
             statement.setString(1,user.getLogin());
             statement.setString(2,user.getPassword());
             statement.executeUpdate();
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
             e.printStackTrace();
         }
     }
@@ -55,7 +53,11 @@ public class DefaultUserDao implements UserDao {
                     return new User(login,rs.getString("password"));
                 }
             }
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
             e.printStackTrace();
         }
         return null;
