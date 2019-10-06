@@ -38,7 +38,7 @@ public class LoginServlet extends HttpServlet {
             resp.addCookie(new Cookie("myAppUserCookie", user.toString()));
             redirect("Home", req, resp);
         } else {
-            req.setAttribute("errorNum", 1);
+            req.setAttribute("error", true);
             req.setAttribute("errorMsg", "Wrong login or password");
             forward("login", req, resp);
         }

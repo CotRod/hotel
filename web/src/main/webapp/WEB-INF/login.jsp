@@ -11,7 +11,7 @@
     <input type="password" required placeholder="password" name="password">
     <input type="submit" value="Log in">
 </form>
-<c:if test="${errorNum==1}">
+<c:if test="${error}">
     <p style="color:red">${errorMsg}</p>
 </c:if>
 <p><a href="/hotel/signup"> To sign up </a> </p>

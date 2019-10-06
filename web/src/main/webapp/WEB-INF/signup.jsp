@@ -12,7 +12,7 @@
     <input type="password" required placeholder="password" name="password">
     <input type="submit" value="Sign up">
 </form>
-<c:if test="${errorNum==2}">
+<c:if test="${error}">
     <p style="color:red">${errorMsg}</p>
 </c:if>
 <p><a href="/hotel/login"> To log in </a> </p>

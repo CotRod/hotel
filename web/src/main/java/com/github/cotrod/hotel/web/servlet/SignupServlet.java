@@ -30,8 +30,8 @@ public class SignupServlet extends HttpServlet {
         String password = req.getParameter("password");
         User user = authService.saveUser(login,password);
         if (user == null) {
+            req.setAttribute("error", true);
             req.setAttribute("errorMsg", "Choose another login");
-            req.setAttribute("errorNum", 2);
             forward("signup", req, resp);
         } else {
             req.getSession().setAttribute("login", login);
