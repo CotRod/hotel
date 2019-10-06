@@ -7,7 +7,7 @@
 <body>
 
 <h2>Hello user, ${login}!</h2>
-<h2>Привет юзер, ${login}!</h2>
+<h2>Привет юзер, ${role}!</h2>
 <p><a href="/hotel/logout">Log out</a></p>
 
 </body>

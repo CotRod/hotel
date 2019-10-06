@@ -2,8 +2,11 @@ package com.github.cotrod.hotel.service.impl;
 
 import com.github.cotrod.hotel.dao.UserDao;
 import com.github.cotrod.hotel.dao.impl.DefaultUserDao;
+import com.github.cotrod.hotel.model.Role;
 import com.github.cotrod.hotel.model.User;
 import com.github.cotrod.hotel.service.AuthService;
+
+import static com.github.cotrod.hotel.model.Role.*;
 
 public class DefaultAuthService implements AuthService {
     private UserDao userDao = DefaultUserDao.getInstance();
@@ -25,18 +28,30 @@ public class DefaultAuthService implements AuthService {
     }
 
     @Override
-    public boolean isValidUser(String login, String password) {
+    public User getUser(String login, String password) {
         User user = getUserByLogin(login);
-        return user != null && user.getPassword().equals(password);
+        if(user!=null){
+            if (user.getPassword().equals(password)){
+                return user;
+            }
+        }
+        return null;
     }
 
     @Override
-    public User getUserByLogin(String login) {
+    public User saveUser(String login, String password) {
+        User user = getUserByLogin(login);
+        if (user==null){
+            user = new User(login,password);
+            userDao.save(user);
+            return user;
+        }else {
+            return null;
+        }
+    }
+
+    private User getUserByLogin(String login) {
         return userDao.getUserByLogin(login);
     }
 
-    @Override
-    public void saveUser(String login, String password) {
-        userDao.save(new User(login, password));
-    }
 }

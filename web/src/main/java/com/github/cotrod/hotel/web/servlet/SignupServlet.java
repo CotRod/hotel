@@ -28,16 +28,16 @@ public class SignupServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
-        User user = authService.getUserByLogin(login);
-        if (user != null) {
+        User user = authService.saveUser(login,password);
+        if (user == null) {
             req.setAttribute("errorMsg", "Choose another login");
             req.setAttribute("errorNum", 2);
             forward("signup", req, resp);
         } else {
-            authService.saveUser(login, password);
             req.getSession().setAttribute("login", login);
-            resp.addCookie(new Cookie("myAppUserCookie", authService.getUserByLogin(login).toString()));
-            redirect("userHome", req, resp);
+            req.getSession().setAttribute("role",user.getRole().name());
+            resp.addCookie(new Cookie("myAppUserCookie", user.toString()));
+            redirect("Home", req, resp);
         }
     }
 }

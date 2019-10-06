@@ -1,5 +1,7 @@
 package com.github.cotrod.hotel.web.servlet;
 
+import com.github.cotrod.hotel.model.Role;
+import com.github.cotrod.hotel.model.User;
 import com.github.cotrod.hotel.service.AuthService;
 import com.github.cotrod.hotel.service.impl.DefaultAuthService;
 
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.github.cotrod.hotel.model.Role.*;
 import static com.github.cotrod.hotel.web.WebUtils.forward;
 import static com.github.cotrod.hotel.web.WebUtils.redirect;
 
@@ -27,11 +30,13 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
+        User user = authService.getUser(login, password);
 
-        if (authService.isValidUser(login, password)) {
+        if (user != null) {
             req.getSession().setAttribute("login", login);
-            resp.addCookie(new Cookie("myAppUserCookie", authService.getUserByLogin(login).toString()));
-            redirect("userHome", req, resp);
+            req.getSession().setAttribute("role", user.getRole().name());
+            resp.addCookie(new Cookie("myAppUserCookie", user.toString()));
+            redirect("Home", req, resp);
         } else {
             req.setAttribute("errorNum", 1);
             req.setAttribute("errorMsg", "Wrong login or password");

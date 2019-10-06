@@ -11,7 +11,7 @@ import java.util.Optional;
 import static com.github.cotrod.hotel.web.WebUtils.findCookie;
 import static com.github.cotrod.hotel.web.WebUtils.redirect;
 
-@WebFilter(urlPatterns = {"/login","/signup","/"})
+@WebFilter(urlPatterns = {"/login", "/signup", "/"})
 public class AuthorizedFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -20,7 +20,7 @@ public class AuthorizedFilter implements Filter {
 
         Optional<Cookie> cookie = findCookie("myAppUserCookie", req);
         if (cookie.isPresent()) {
-            redirect("userHome", req, resp);
+            redirect("Home", req, resp);
         } else {
             filterChain.doFilter(req, resp);
         }
