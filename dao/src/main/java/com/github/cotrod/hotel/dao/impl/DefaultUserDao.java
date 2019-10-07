@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DefaultUserDao implements UserDao {
 
@@ -63,5 +65,51 @@ public class DefaultUserDao implements UserDao {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public List<User> getUsers() {
+        List<User> users = new ArrayList<>();
+        User user;
+        MySqlDataBase dataBase = new MySqlDataBase();
+        try (Connection connection = dataBase.connect();
+             PreparedStatement statement = connection.prepareStatement("select * from user_table where role='USER'")) {
+            try {
+                ResultSet rs = statement.executeQuery();
+                while (rs.next()) {
+                    user = new User(rs.getString("login"), rs.getString("password"));
+                    users.add(user);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    @Override
+    public void deleteUser(String login) {
+        MySqlDataBase dataBase = new MySqlDataBase();
+        try (Connection connection = dataBase.connect();
+             PreparedStatement statement = connection.prepareStatement("delete from user_table where login=?")) {
+            statement.setString(1, login);
+            statement.executeUpdate();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

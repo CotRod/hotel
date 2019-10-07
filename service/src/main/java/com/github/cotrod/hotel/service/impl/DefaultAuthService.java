@@ -2,11 +2,10 @@ package com.github.cotrod.hotel.service.impl;
 
 import com.github.cotrod.hotel.dao.UserDao;
 import com.github.cotrod.hotel.dao.impl.DefaultUserDao;
-import com.github.cotrod.hotel.model.Role;
 import com.github.cotrod.hotel.model.User;
 import com.github.cotrod.hotel.service.AuthService;
 
-import static com.github.cotrod.hotel.model.Role.*;
+import java.util.List;
 
 public class DefaultAuthService implements AuthService {
     private UserDao userDao = DefaultUserDao.getInstance();
@@ -48,6 +47,16 @@ public class DefaultAuthService implements AuthService {
         }else {
             return null;
         }
+    }
+
+    @Override
+    public void deleteUser(String login) {
+        userDao.deleteUser(login);
+    }
+
+    @Override
+    public List<User> getUsers(){
+        return userDao.getUsers();
     }
 
     private User getUserByLogin(String login) {
