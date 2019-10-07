@@ -37,7 +37,7 @@ public class SignupServlet extends HttpServlet {
             req.getSession().setAttribute("login", login);
             req.getSession().setAttribute("role",user.getRole().name());
             resp.addCookie(new Cookie("myAppUserCookie", user.toString()));
-            redirect("Home", req, resp);
+            redirect("home", req, resp);
         }
     }
 }

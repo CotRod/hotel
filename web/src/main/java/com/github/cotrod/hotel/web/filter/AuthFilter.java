@@ -12,7 +12,7 @@ import java.util.Optional;
 import static com.github.cotrod.hotel.web.WebUtils.findCookie;
 import static com.github.cotrod.hotel.web.WebUtils.redirect;
 
-@WebFilter(urlPatterns = "/Home")
+@WebFilter(urlPatterns = {"/home","/userHome","/adminHome"})
 public class AuthFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
