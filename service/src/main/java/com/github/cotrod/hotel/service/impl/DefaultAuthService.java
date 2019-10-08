@@ -19,7 +19,7 @@ public class DefaultAuthService implements AuthService {
 
     @Override
     public User getUser(String login, String password) {
-        User user = getUserByLogin(login);
+        User user = userDao.getUserByLogin(login);
         if(user!=null){
             if (user.getPassword().equals(password)){
                 return user;
@@ -30,7 +30,7 @@ public class DefaultAuthService implements AuthService {
 
     @Override
     public User saveUser(String login, String password) {
-        User user = getUserByLogin(login);
+        User user = userDao.getUserByLogin(login);
         if (user==null){
             user = new User(login,password);
             userDao.save(user);
@@ -49,9 +49,4 @@ public class DefaultAuthService implements AuthService {
     public List<User> getUsers(){
         return userDao.getUsers();
     }
-
-    private User getUserByLogin(String login) {
-        return userDao.getUserByLogin(login);
-    }
-
 }
