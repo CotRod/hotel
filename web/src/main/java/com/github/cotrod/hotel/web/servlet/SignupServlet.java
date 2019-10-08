@@ -31,7 +31,6 @@ public class SignupServlet extends HttpServlet {
         User user = authService.saveUser(login,password);
         if (user == null) {
             req.setAttribute("error", true);
-            req.setAttribute("errorMsg", "Choose another login");
             forward("signup", req, resp);
         } else {
             req.getSession().setAttribute("login", login);

@@ -1,20 +1,26 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename="translations" var="messages"/>
+
 <html>
 <head>
-    <title>Log in</title>
+    <title><fmt:message key="page.name.login" bundle="${messages}"/></title>
 </head>
 <body>
-<h2>Log in</h2>
+<%@include file="LanguageSubPage.jsp"%>
+<h2><fmt:message key="page.name.login" bundle="${messages}"/></h2>
 <form method="post">
-    <input type="text" required placeholder="login" name="login">
-    <input type="password" required placeholder="password" name="password">
-    <input type="submit" value="Log in">
+    <input type="text" required placeholder="<fmt:message key="plcholder.login" bundle="${messages}"/>" name="login">
+    <input type="password" required placeholder="<fmt:message key="plcholder.password" bundle="${messages}"/>" name="password">
+    <input type="submit" value="<fmt:message key="page.name.login" bundle="${messages}"/>">
 </form>
 <c:if test="${error}">
-    <p style="color:red">${errorMsg}</p>
+    <p style="color:red"><fmt:message key="page.login.error" bundle="${messages}"/></p>
 </c:if>
-<p><a href="/hotel/signup"> To sign up </a> </p>
+<p><a href="/hotel/signup"><fmt:message key="to.page.signup" bundle="${messages}"/></a> </p>
 
 </body>
 </html>

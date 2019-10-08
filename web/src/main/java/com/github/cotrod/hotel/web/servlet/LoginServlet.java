@@ -39,7 +39,6 @@ public class LoginServlet extends HttpServlet {
             redirect("home", req, resp);
         } else {
             req.setAttribute("error", true);
-            req.setAttribute("errorMsg", "Wrong login or password");
             forward("login", req, resp);
         }
     }
