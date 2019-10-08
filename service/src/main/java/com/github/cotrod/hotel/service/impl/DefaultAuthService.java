@@ -9,21 +9,12 @@ import java.util.List;
 
 public class DefaultAuthService implements AuthService {
     private UserDao userDao = DefaultUserDao.getInstance();
-    private static volatile AuthService instance;
-
-    private DefaultAuthService() {
+    private static class SingletonHolder{
+        static final DefaultAuthService HOLDER_INSTANCE = new DefaultAuthService();
     }
 
     public static AuthService getInstance() {
-        AuthService localInstance = instance;
-        if (localInstance == null) {
-            synchronized (AuthService.class) {
-                if (localInstance == null) {
-                    instance = localInstance = new DefaultAuthService();
-                }
-            }
-        }
-        return localInstance;
+        return DefaultAuthService.SingletonHolder.HOLDER_INSTANCE;
     }
 
     @Override

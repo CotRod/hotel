@@ -1,5 +1,6 @@
 package com.github.cotrod.hotel.dao.impl;
 
+import com.github.cotrod.hotel.dao.DataSource;
 import com.github.cotrod.hotel.dao.UserDao;
 import com.github.cotrod.hotel.model.Role;
 import com.github.cotrod.hotel.model.User;
@@ -13,43 +14,30 @@ import java.util.List;
 
 public class DefaultUserDao implements UserDao {
 
-    private static volatile UserDao instance;
+    private static class SingletonHolder{
+        static final DefaultUserDao HOLDER_INSTANCE = new DefaultUserDao();
+    }
 
     public static UserDao getInstance() {
-        UserDao localInstance = instance;
-        if (localInstance == null) {
-            synchronized (UserDao.class) {
-                localInstance = instance;
-                if (localInstance == null) {
-                    instance = localInstance = new DefaultUserDao();
-                }
-            }
-        }
-        return localInstance;
+        return DefaultUserDao.SingletonHolder.HOLDER_INSTANCE;
     }
 
     @Override
     public void save(User user) {
-        MySqlDataBase dataBase = new MySqlDataBase();
-        try (Connection connection = dataBase.connect();
+        try (Connection connection = DataSource.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement("insert into user_table(login,password,role) values (?,?,?)")) {
             statement.setString(1, user.getLogin());
             statement.setString(2, user.getPassword());
             statement.setString(3, user.getRole().toString());
             statement.executeUpdate();
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public User getUserByLogin(String login) {
-        MySqlDataBase dataBase = new MySqlDataBase();
-        try (Connection connection = dataBase.connect();
+        try (Connection connection = DataSource.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement("select * from user_table where login =?")) {
             statement.setString(1, login);
             try (ResultSet rs = statement.executeQuery()) {
@@ -57,11 +45,7 @@ public class DefaultUserDao implements UserDao {
                     return new User(login, rs.getString("password"), Role.valueOf(rs.getString("role")));
                 }
             }
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
@@ -71,8 +55,7 @@ public class DefaultUserDao implements UserDao {
     public List<User> getUsers() {
         List<User> users = new ArrayList<>();
         User user;
-        MySqlDataBase dataBase = new MySqlDataBase();
-        try (Connection connection = dataBase.connect();
+        try (Connection connection = DataSource.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement("select * from user_table where role='USER'")) {
             try {
                 ResultSet rs = statement.executeQuery();
@@ -80,16 +63,11 @@ public class DefaultUserDao implements UserDao {
                     user = new User(rs.getString("login"), rs.getString("password"));
                     users.add(user);
                 }
+                return users;
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return users;
@@ -97,18 +75,11 @@ public class DefaultUserDao implements UserDao {
 
     @Override
     public void deleteUser(String login) {
-        MySqlDataBase dataBase = new MySqlDataBase();
-        try (Connection connection = dataBase.connect();
+        try (Connection connection = DataSource.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement("delete from user_table where login=?")) {
             statement.setString(1, login);
             statement.executeUpdate();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

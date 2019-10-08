@@ -4,6 +4,8 @@ import com.github.cotrod.hotel.model.Role;
 import com.github.cotrod.hotel.model.User;
 import com.github.cotrod.hotel.service.AuthService;
 import com.github.cotrod.hotel.service.impl.DefaultAuthService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,6 +22,7 @@ import static com.github.cotrod.hotel.web.WebUtils.redirect;
 @WebServlet(urlPatterns = {"/login", "/"})
 public class LoginServlet extends HttpServlet {
     private AuthService authService = DefaultAuthService.getInstance();
+    private static final Logger log = LoggerFactory.getLogger(LoginServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -39,6 +42,7 @@ public class LoginServlet extends HttpServlet {
             redirect("home", req, resp);
         } else {
             req.setAttribute("error", true);
+            log.warn("user {} couldn't log in with password {}", login, password);
             forward("login", req, resp);
         }
     }

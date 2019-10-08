@@ -12,7 +12,7 @@
 <body>
 <%@include file="LanguageSubPage.jsp"%>
 <h2>Hello administrator, ${login}!</h2>
-<h2>Привет администратор, ${login}!</h2>
+<h2>Привет администратор, ${role}!</h2>
 <c:if test="${not empty users}">
     <form method="post">
     <ul>
