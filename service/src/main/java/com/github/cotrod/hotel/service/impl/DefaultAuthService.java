@@ -41,6 +41,18 @@ public class DefaultAuthService implements AuthService {
     }
 
     @Override
+    public boolean changePassword(User user, String newPass1, String newPass2) {
+        if(newPass1.equals(newPass2)){
+            String oldPass = userDao.getUserByLogin(user.getLogin()).getPassword();
+            if (user.getPassword().equals(oldPass)){
+                userDao.changePassword(user.getLogin(),newPass1);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void deleteUser(String login) {
         userDao.deleteUser(login);
     }

@@ -4,7 +4,6 @@ import com.github.cotrod.hotel.dao.UserDao;
 import com.github.cotrod.hotel.model.Role;
 import com.github.cotrod.hotel.model.User;
 import com.github.cotrod.hotel.service.impl.DefaultAuthService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -52,5 +51,13 @@ public class DefaultAuthServiceTest {
         when(dao.getUsers()).thenReturn(new ArrayList<User>());
         List<User> users = service.getUsers();
         assertNotNull(users);
+    }
+
+    @Test
+    void changeWrongPass(){
+        when(dao.getUserByLogin("user")).thenReturn(new User("user","user"));
+        assertTrue(service.changePassword(new User("user","user"),"npass","npass"));
+        assertFalse(service.changePassword(new User("user","user"),"npass","anpass"));
+        assertFalse(service.changePassword(new User("user","wrongpass"),"npass","npass"));
     }
 }

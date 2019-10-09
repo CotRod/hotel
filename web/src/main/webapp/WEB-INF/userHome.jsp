@@ -12,6 +12,8 @@
 <%@include file="LanguageSubPage.jsp" %>
 <h2>Hello user, ${login}!</h2>
 <h2>Привет юзер, ${role}!</h2>
+
+<p><a href="/hotel/changePassword"><fmt:message key="page.name.change.password" bundle="${messages}"/></a></p>
 <p><a href="/hotel/logout"><fmt:message key="to.logout" bundle="${messages}"/></a></p>
 
 </body>

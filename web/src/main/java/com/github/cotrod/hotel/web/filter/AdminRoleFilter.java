@@ -14,7 +14,7 @@ import static com.github.cotrod.hotel.model.Role.*;
 import static com.github.cotrod.hotel.web.WebUtils.findCookie;
 import static com.github.cotrod.hotel.web.WebUtils.redirect;
 
-@WebFilter(urlPatterns = {"/userHome","/home"})
+@WebFilter(urlPatterns = {"/userHome","/home","/changePassword"})
 public class AdminRoleFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {

@@ -13,4 +13,6 @@ public interface UserDao {
     List<User> getUsers();
 
     void deleteUser(String login);
+
+    void changePassword(String login, String password);
 }

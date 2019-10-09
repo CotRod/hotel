@@ -9,4 +9,5 @@ public interface AuthService {
     User saveUser(String login, String password);
     List<User> getUsers();
     void deleteUser(String login);
+    boolean changePassword(User user, String newPass1, String newPass2);
 }
