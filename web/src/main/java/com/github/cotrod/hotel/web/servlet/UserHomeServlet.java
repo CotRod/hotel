@@ -10,7 +10,7 @@ import java.io.IOException;
 import static com.github.cotrod.hotel.web.WebUtils.forward;
 
 @WebServlet(urlPatterns = "/userHome")
-public class userHomeServlet extends HttpServlet {
+public class UserHomeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         forward("userHome", req, resp);

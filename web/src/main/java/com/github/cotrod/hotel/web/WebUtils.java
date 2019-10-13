@@ -35,8 +35,13 @@ public class WebUtils {
 
     public static Optional<Cookie> findCookie(String cookieName, HttpServletRequest req) {
         Cookie[] cookies = req.getCookies();
-        return Arrays.stream(cookies)
-                .filter(c -> c.getName().equals(cookieName))
-                .findAny();
+        if(cookies!=null) {
+            return Arrays.stream(cookies)
+                    .filter(c -> c.getName().equals(cookieName))
+                    .findAny();
+        }
+        else {
+            return Optional.empty();
+        }
     }
 }
