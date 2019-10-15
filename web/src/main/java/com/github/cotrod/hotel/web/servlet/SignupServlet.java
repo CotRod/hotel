@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.github.cotrod.hotel.web.WebUtils.entryProfile;
 import static com.github.cotrod.hotel.web.WebUtils.forward;
-import static com.github.cotrod.hotel.web.WebUtils.redirect;
 
 @WebServlet(urlPatterns = "/signup")
 public class SignupServlet extends HttpServlet {
@@ -37,10 +37,10 @@ public class SignupServlet extends HttpServlet {
             log.warn("user {} couldn't signup", login);
             forward("signup", req, resp);
         } else {
-            req.getSession().setAttribute("login", login);
+            req.getSession().setAttribute("login", login);  //todo replace to WevUtils
             req.getSession().setAttribute("role", user.getRole().name());
             resp.addCookie(new Cookie("myAppUserCookie", user.toString()));
-            redirect("home", req, resp);
+            entryProfile(req, resp);
         }
     }
 }

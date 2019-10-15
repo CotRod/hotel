@@ -7,20 +7,21 @@
 
 <html>
 <head>
-    <title><fmt:message key="page.name.login" bundle="${messages}"/></title>
+    <title><fmt:message key="page.login.log.in" bundle="${messages}"/></title>
 </head>
 <body>
 <%@include file="LanguageSubPage.jsp"%>
-<h2><fmt:message key="page.name.login" bundle="${messages}"/></h2>
+<h2><fmt:message key="page.login.log.in" bundle="${messages}"/></h2>
 <form method="post">
-    <input type="text" required placeholder="<fmt:message key="plcholder.login" bundle="${messages}"/>" name="login">
-    <input type="password" required placeholder="<fmt:message key="plcholder.password" bundle="${messages}"/>" name="password">
-    <input type="submit" value="<fmt:message key="page.name.login" bundle="${messages}"/>">
+    <input type="text" required placeholder="<fmt:message key="placeholder.login" bundle="${messages}"/>" name="login">
+    <input type="password" required placeholder="<fmt:message key="placeholder.password" bundle="${messages}"/>"
+           name="password">
+    <input type="submit" value="<fmt:message key="page.login.log.in" bundle="${messages}"/>">
 </form>
 <c:if test="${error}">
     <p style="color:red"><fmt:message key="page.login.error" bundle="${messages}"/></p>
 </c:if>
-<p><a href="/hotel/signup"><fmt:message key="to.page.signup" bundle="${messages}"/></a> </p>
+<p><a href="${pageContext.request.contextPath}/signup"><fmt:message key="to.page.signup" bundle="${messages}"/></a></p>
 
 </body>
 </html>

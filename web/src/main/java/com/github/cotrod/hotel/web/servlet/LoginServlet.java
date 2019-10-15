@@ -1,6 +1,5 @@
 package com.github.cotrod.hotel.web.servlet;
 
-import com.github.cotrod.hotel.model.Role;
 import com.github.cotrod.hotel.model.User;
 import com.github.cotrod.hotel.service.AuthService;
 import com.github.cotrod.hotel.service.impl.DefaultAuthService;
@@ -15,9 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.github.cotrod.hotel.model.Role.*;
+import static com.github.cotrod.hotel.web.WebUtils.entryProfile;
 import static com.github.cotrod.hotel.web.WebUtils.forward;
-import static com.github.cotrod.hotel.web.WebUtils.redirect;
 
 @WebServlet(urlPatterns = {"/login", "/"})
 public class LoginServlet extends HttpServlet {
@@ -36,10 +34,10 @@ public class LoginServlet extends HttpServlet {
         User user = authService.getUser(login, password);
 
         if (user != null) {
-            req.getSession().setAttribute("login", login);
+            req.getSession().setAttribute("login", login);  //todo replace to WebUtils
             req.getSession().setAttribute("role", user.getRole().name());
             resp.addCookie(new Cookie("myAppUserCookie", user.toString()));
-            redirect("home", req, resp);
+            entryProfile(req, resp);
         } else {
             req.setAttribute("error", true);
             log.warn("user {} couldn't log in with password {}", login, password);

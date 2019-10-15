@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import static com.github.cotrod.hotel.web.WebUtils.forward;
 
-@WebServlet(urlPatterns = "/userHome")
+@WebServlet(urlPatterns = {"/profile/user/home", "/profile/user", "/profile"})
 public class UserHomeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

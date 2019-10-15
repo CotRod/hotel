@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
+import static com.github.cotrod.hotel.web.WebUtils.entryProfile;
 import static com.github.cotrod.hotel.web.WebUtils.findCookie;
-import static com.github.cotrod.hotel.web.WebUtils.redirect;
 
 @WebFilter(urlPatterns = {"/login", "/signup", "/"})
 public class AuthorizedFilter implements Filter {
@@ -20,7 +20,7 @@ public class AuthorizedFilter implements Filter {
 
         Optional<Cookie> cookie = findCookie("myAppUserCookie", req);
         if (cookie.isPresent()) {
-            redirect("home", req, resp);
+            entryProfile(req, resp); //todo get role from cookie
         } else {
             filterChain.doFilter(req, resp);
         }

@@ -6,20 +6,25 @@
 <fmt:setBundle basename="translations" var="messages"/>
 <html>
 <head>
-    <title><fmt:message key="page.name.signup" bundle="${messages}"/></title>
+    <title><fmt:message key="page.signup.sign.up" bundle="${messages}"/></title>
 </head>
 <body>
 <%@include file="LanguageSubPage.jsp"%>
-<h2><fmt:message key="page.name.signup" bundle="${messages}"/></h2>
+<h2><fmt:message key="page.signup.sign.up" bundle="${messages}"/></h2>
 <form method="post">
-    <input type="text" required placeholder="<fmt:message key="plcholder.login" bundle="${messages}"/>" name="login">
-    <input type="password" required placeholder="<fmt:message key="plcholder.password" bundle="${messages}"/>" name="password">
-    <input type="submit" value="<fmt:message key="page.name.signup" bundle="${messages}"/>">
+    <input type="text" required placeholder="<fmt:message key="placeholder.first.name" bundle="${messages}"/>"
+           name="firstName">
+    <input type="text" required placeholder="<fmt:message key="placeholder.last.name" bundle="${messages}"/>"
+           name="lastName">
+    <input type="text" required placeholder="<fmt:message key="placeholder.login" bundle="${messages}"/>" name="login">
+    <input type="password" required placeholder="<fmt:message key="placeholder.password" bundle="${messages}"/>"
+           name="password">
+    <input type="submit" value="<fmt:message key="page.signup.sign.up" bundle="${messages}"/>">
 </form>
 <c:if test="${error}">
     <p style="color:red"><fmt:message key="page.signup.error" bundle="${messages}"/></p>
 </c:if>
-<p><a href="/hotel/login"><fmt:message key="to.page.login" bundle="${messages}"/></a> </p>
+<p><a href="${pageContext.request.contextPath}/login"><fmt:message key="to.page.login" bundle="${messages}"/></a></p>
 
 </body>
 </html>

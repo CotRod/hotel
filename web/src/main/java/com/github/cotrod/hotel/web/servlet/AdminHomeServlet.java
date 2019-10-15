@@ -15,13 +15,14 @@ import java.util.List;
 import static com.github.cotrod.hotel.web.WebUtils.forward;
 import static com.github.cotrod.hotel.web.WebUtils.redirect;
 
-@WebServlet(urlPatterns = "/adminHome")
+@WebServlet(urlPatterns = {"/profile/admin/home", "/profile/admin"})
 public class AdminHomeServlet extends HttpServlet {
     private AuthService authService = DefaultAuthService.getInstance();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<User> users = authService.getUsers();
-        req.setAttribute("users",users);
+        req.setAttribute("users", users);
         forward("adminHome", req, resp);
     }
 
@@ -29,6 +30,6 @@ public class AdminHomeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String login = req.getParameter("btn");
         authService.deleteUser(login);
-        redirect("adminHome",req,resp);
+        redirect("profile/admin/home", req, resp);
     }
 }

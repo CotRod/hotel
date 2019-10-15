@@ -17,7 +17,7 @@ import java.util.List;
 public class DefaultUserDao implements UserDao {
     private static final Logger log = LoggerFactory.getLogger(DefaultUserDao.class);
 
-    private static class SingletonHolder{
+    private static class SingletonHolder {
         static final DefaultUserDao HOLDER_INSTANCE = new DefaultUserDao();
     }
 
@@ -34,7 +34,8 @@ public class DefaultUserDao implements UserDao {
             statement.setString(3, user.getRole().toString());
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.warn("dao.save error {}", user);
+            throw new RuntimeException();
         }
     }
 
@@ -48,11 +49,11 @@ public class DefaultUserDao implements UserDao {
                     return new User(login, rs.getString("password"), Role.valueOf(rs.getString("role")));
                 }
             }
+            return null;
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.warn("Login {} is not exist", login);
+            throw new RuntimeException();
         }
-        log.warn("Login {} is not exist", login);
-        return null;
     }
 
     @Override
@@ -61,21 +62,16 @@ public class DefaultUserDao implements UserDao {
         User user;
         try (Connection connection = DataSource.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement("select * from user_table where role='USER'")) {
-            try {
-                ResultSet rs = statement.executeQuery();
-                while (rs.next()) {
-                    user = new User(rs.getString("login"), rs.getString("password"));
-                    users.add(user);
-                }
-                return users;
-            } catch (SQLException e) {
-                e.printStackTrace();
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                user = new User(rs.getString("login"), rs.getString("password"));
+                users.add(user);
             }
+            return users;
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.warn("There are no users :(");
+            throw new RuntimeException();
         }
-        log.warn("There are no users :(");
-        return users;
     }
 
     @Override
@@ -85,19 +81,21 @@ public class DefaultUserDao implements UserDao {
             statement.setString(1, login);
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.warn("Login {} is not exist", login);
+            throw new RuntimeException();
         }
     }
 
     @Override
-    public void changePassword(String login, String password){
-        try(Connection connection = DataSource.getInstance().getConnection();
-            PreparedStatement statement = connection.prepareStatement("update user_table set password=? where login=?")){
-            statement.setString(1,password);
-            statement.setString(2,login);
+    public void changePassword(String login, String password) {
+        try (Connection connection = DataSource.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement("update user_table set password=? where login=?")) {
+            statement.setString(1, password);
+            statement.setString(2, login);
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.warn("Exception in dao.changePassword()");
+            throw new RuntimeException();
         }
     }
 }
