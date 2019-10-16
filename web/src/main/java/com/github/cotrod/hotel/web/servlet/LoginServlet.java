@@ -1,8 +1,9 @@
 package com.github.cotrod.hotel.web.servlet;
 
 import com.github.cotrod.hotel.model.User;
-import com.github.cotrod.hotel.service.AuthService;
-import com.github.cotrod.hotel.service.impl.DefaultAuthService;
+import com.github.cotrod.hotel.model.UserDTO;
+import com.github.cotrod.hotel.service.UserService;
+import com.github.cotrod.hotel.service.impl.DefaultUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +20,7 @@ import static com.github.cotrod.hotel.web.WebUtils.forward;
 
 @WebServlet(urlPatterns = {"/login", "/"})
 public class LoginServlet extends HttpServlet {
-    private AuthService authService = DefaultAuthService.getInstance();
+    private UserService userService = DefaultUserService.getInstance();
     private static final Logger log = LoggerFactory.getLogger(LoginServlet.class);
 
     @Override
@@ -29,14 +30,16 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        UserDTO userDTO = new UserDTO();
         String login = req.getParameter("login");
         String password = req.getParameter("password");
-        User user = authService.getUser(login, password);
+        User user = new User(login, password);
+        userDTO = userService.getUser(user);
+//        User user = authService.getUser(login, password);
 
-        if (user != null) {
-            req.getSession().setAttribute("login", login);  //todo replace to WebUtils
-            req.getSession().setAttribute("role", user.getRole().name());
-            resp.addCookie(new Cookie("myAppUserCookie", user.toString()));
+        if (userDTO != null) {
+            req.getSession().setAttribute("user", userDTO);
+            resp.addCookie(new Cookie("myAppUserCookie", userDTO.getLogin()));
             entryProfile(req, resp);
         } else {
             req.setAttribute("error", true);

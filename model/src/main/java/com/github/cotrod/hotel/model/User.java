@@ -1,11 +1,13 @@
 package com.github.cotrod.hotel.model;
 
-import static com.github.cotrod.hotel.model.Role.*;
-
 public class User {
+    private long id;
     private Role role;
     private String login;
     private String password;
+
+    public User() {
+    }
 
     public User(String login, String password, Role role) {
         this.login = login;
@@ -16,7 +18,14 @@ public class User {
     public User(String login, String password) {
         this.login = login;
         this.password = password;
-        this.role = USER;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public Role getRole() {

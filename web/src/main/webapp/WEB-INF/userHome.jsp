@@ -10,8 +10,8 @@
 </head>
 <body>
 <%@include file="LanguageSubPage.jsp" %>
-<h2>Hello user, ${login}!</h2>
-<h2>Привет юзер, ${role}!</h2>
+<h2>Hello user, ${user.login}!</h2>
+<h2>Привет юзер, ${user.role}!</h2>
 
 <p><a href="${pageContext.request.contextPath}/profile/user/settings"><fmt:message key="to.settings.page"
                                                                                    bundle="${msg}"/></a></p>

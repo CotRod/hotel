@@ -3,14 +3,11 @@ package com.github.cotrod.hotel.dao.impl;
 import com.github.cotrod.hotel.dao.DataSource;
 import com.github.cotrod.hotel.dao.UserDao;
 import com.github.cotrod.hotel.model.Role;
-import com.github.cotrod.hotel.model.User;
+import com.github.cotrod.hotel.model.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,27 +23,46 @@ public class DefaultUserDao implements UserDao {
     }
 
     @Override
-    public void save(User user) {
-        try (Connection connection = DataSource.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement("insert into user_table(login,password,role) values (?,?,?)")) {
-            statement.setString(1, user.getLogin());
-            statement.setString(2, user.getPassword());
-            statement.setString(3, user.getRole().toString());
-            statement.executeUpdate();
+    public long save(UserDTO userDTO) {
+        Connection connection = null;
+        long id;
+        try {
+            connection = DataSource.getInstance().getConnection();
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement("insert into client (first_name,last_name) values (?,?)", Statement.RETURN_GENERATED_KEYS)) {
+                statement.setString(1, userDTO.getFirstName());
+                statement.setString(2, userDTO.getLastName());
+                statement.executeUpdate();
+                ResultSet rs = statement.getGeneratedKeys();
+                rs.next();
+                id = rs.getLong(1);
+                userDTO.setId(id);
+            }
+            try (PreparedStatement statement = connection.prepareStatement("insert into user(id,login,password) values (?,?,?)")) {
+                statement.setLong(1, id);
+                statement.setString(2, userDTO.getLogin());
+                statement.setString(3, userDTO.getPassword());
+                statement.executeUpdate();
+            }
+
+            connection.commit();
+            return id;
         } catch (SQLException e) {
-            log.warn("dao.save error {}", user);
+            log.warn("dao.save error {}", userDTO);
             throw new RuntimeException();
         }
     }
 
+
     @Override
-    public User getUserByLogin(String login) {
+    public UserDTO getUserByLogin(String login) {
         try (Connection connection = DataSource.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement("select * from user_table where login =?")) {
+             PreparedStatement statement = connection.prepareStatement("SELECT * from client join user on client.id = user.id " +
+                     "where login =?")) {
             statement.setString(1, login);
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
-                    return new User(login, rs.getString("password"), Role.valueOf(rs.getString("role")));
+                    return CreateUserDTO(rs);
                 }
             }
             return null;
@@ -57,15 +73,32 @@ public class DefaultUserDao implements UserDao {
     }
 
     @Override
-    public List<User> getUsers() {
-        List<User> users = new ArrayList<>();
-        User user;
+    public UserDTO getUserById(long id) {
         try (Connection connection = DataSource.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement("select * from user_table where role='USER'")) {
+             PreparedStatement statement = connection.prepareStatement("SELECT * from client join user on client.id = user.id where user.id =?")) {
+            statement.setLong(1, id);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return CreateUserDTO(rs);
+                }
+            }
+            return null;
+        } catch (SQLException e) {
+            log.warn("id {} is not exist", id);
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
+    public List<UserDTO> getUsers() {
+        List<UserDTO> users = new ArrayList<>();
+        UserDTO userDTO;
+        try (Connection connection = DataSource.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * from client join user on client.id = user.id where role='USER'")) {
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                user = new User(rs.getString("login"), rs.getString("password"));
-                users.add(user);
+                userDTO = CreateUserDTO(rs);
+                users.add(userDTO);
             }
             return users;
         } catch (SQLException e) {
@@ -75,27 +108,46 @@ public class DefaultUserDao implements UserDao {
     }
 
     @Override
-    public void deleteUser(String login) {
-        try (Connection connection = DataSource.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement("delete from user_table where login=?")) {
-            statement.setString(1, login);
-            statement.executeUpdate();
+    public void deleteUser(long id) {
+        Connection connection = null;
+        try {
+            connection = DataSource.getInstance().getConnection();
+            connection.setAutoCommit(false);
+            try (PreparedStatement statement = connection.prepareStatement("delete from user where id=?")) {
+                statement.setLong(1, id);
+                statement.executeUpdate();
+            }
+            try (PreparedStatement statement = connection.prepareStatement("delete from client where id=?")) {
+                statement.setLong(1, id);
+                statement.executeUpdate();
+            }
+            connection.commit();
         } catch (SQLException e) {
-            log.warn("Login {} is not exist", login);
+            log.warn("Login {} is not exist", id);
             throw new RuntimeException();
         }
     }
 
     @Override
-    public void changePassword(String login, String password) {
+    public void changePassword(long id, String password) {
         try (Connection connection = DataSource.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement("update user_table set password=? where login=?")) {
+             PreparedStatement statement = connection.prepareStatement("update user set password=? where id=?")) {
             statement.setString(1, password);
-            statement.setString(2, login);
+            statement.setLong(2, id);
             statement.executeUpdate();
         } catch (SQLException e) {
             log.warn("Exception in dao.changePassword()");
             throw new RuntimeException();
         }
+    }
+
+    private UserDTO CreateUserDTO(ResultSet rs) throws SQLException {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(rs.getLong("id"));
+        userDTO.setFirstName(rs.getString("first_name"));
+        userDTO.setLogin(rs.getString("login"));
+        userDTO.setPassword(rs.getString("password"));
+        userDTO.setRole(Role.valueOf(rs.getString("role")));
+        return userDTO;
     }
 }

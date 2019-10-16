@@ -1,8 +1,8 @@
 package com.github.cotrod.hotel.web.servlet;
 
-import com.github.cotrod.hotel.model.User;
-import com.github.cotrod.hotel.service.AuthService;
-import com.github.cotrod.hotel.service.impl.DefaultAuthService;
+import com.github.cotrod.hotel.model.UserDTO;
+import com.github.cotrod.hotel.service.UserService;
+import com.github.cotrod.hotel.service.impl.DefaultUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +19,7 @@ import static com.github.cotrod.hotel.web.WebUtils.forward;
 
 @WebServlet(urlPatterns = "/signup")
 public class SignupServlet extends HttpServlet {
-    private AuthService authService = DefaultAuthService.getInstance();
+    private UserService userService = DefaultUserService.getInstance();
     private static final Logger log = LoggerFactory.getLogger(SignupServlet.class);
 
     @Override
@@ -31,15 +31,21 @@ public class SignupServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
-        User user = authService.saveUser(login, password);
-        if (user == null) {
+        String firstName = req.getParameter("firstName");
+        String lastName = req.getParameter("lastName");
+        UserDTO userDTO = new UserDTO();
+        userDTO.setLogin(login);
+        userDTO.setPassword(password);
+        userDTO.setFirstName(firstName);
+        userDTO.setLastName(lastName);
+        userDTO = userService.saveUser(userDTO);
+        if (userDTO == null) {
             req.setAttribute("error", true);
             log.warn("user {} couldn't signup", login);
             forward("signup", req, resp);
         } else {
-            req.getSession().setAttribute("login", login);  //todo replace to WevUtils
-            req.getSession().setAttribute("role", user.getRole().name());
-            resp.addCookie(new Cookie("myAppUserCookie", user.toString()));
+            req.getSession().setAttribute("user", userDTO);
+            resp.addCookie(new Cookie("myAppUserCookie", userDTO.getLogin()));
             entryProfile(req, resp);
         }
     }

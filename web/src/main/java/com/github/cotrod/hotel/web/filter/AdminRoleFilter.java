@@ -1,6 +1,7 @@
 package com.github.cotrod.hotel.web.filter;
 
 import com.github.cotrod.hotel.model.Role;
+import com.github.cotrod.hotel.model.UserDTO;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -18,7 +19,7 @@ public class AdminRoleFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
 
-        Role role = Role.valueOf((String) req.getSession().getAttribute("role"));
+        Role role = ((UserDTO) req.getSession().getAttribute("user")).getRole();
         if (role.equals(ADMIN)) {
             filterChain.doFilter(req, resp);
         } else {

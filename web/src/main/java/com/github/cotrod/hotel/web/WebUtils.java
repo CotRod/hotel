@@ -1,6 +1,7 @@
 package com.github.cotrod.hotel.web;
 
 import com.github.cotrod.hotel.model.Role;
+import com.github.cotrod.hotel.model.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,7 @@ public class WebUtils {
     }
 
     public static void entryProfile(HttpServletRequest req, HttpServletResponse resp) {
-        Role role = Role.valueOf((String) req.getSession().getAttribute("role"));   //todo role from cookie
+        Role role = ((UserDTO) req.getSession().getAttribute("user")).getRole();
         if (USER.equals(role)) {
             redirect("profile/user/home", req, resp);
         } else if (ADMIN.equals(role)) {
