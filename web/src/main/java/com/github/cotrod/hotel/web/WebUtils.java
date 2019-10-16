@@ -22,7 +22,8 @@ public class WebUtils {
         try {
             req.getRequestDispatcher("/WEB-INF/" + page + ".jsp").forward(req, resp);
         } catch (ServletException | IOException e) {
-            log.warn("Exception during forward to page {}", page);
+            log.warn("Exception during forward to page {} {}", page, e);
+            e.printStackTrace();
             throw new RuntimeException();
         }
     }

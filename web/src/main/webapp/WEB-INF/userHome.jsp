@@ -2,10 +2,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename="translations" var="messages"/>
+<fmt:setBundle basename="translations" var="msg"/>
 <html>
 <head>
-    <title><fmt:message key="page.name.home" bundle="${messages}"/></title>
+    <title><fmt:message key="page.home" bundle="${msg}"/></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <body>
@@ -13,8 +13,9 @@
 <h2>Hello user, ${login}!</h2>
 <h2>Привет юзер, ${role}!</h2>
 
-<p><a href="/hotel/changePassword"><fmt:message key="page.name.change.password" bundle="${messages}"/></a></p>
-<p><a href="/hotel/logout"><fmt:message key="to.logout" bundle="${messages}"/></a></p>
+<p><a href="${pageContext.request.contextPath}/profile/user/settings"><fmt:message key="to.settings.page"
+                                                                                   bundle="${msg}"/></a></p>
+<p><a href="${pageContext.request.contextPath}/logout"><fmt:message key="to.logout" bundle="${msg}"/></a></p>
 
 </body>
 </html>

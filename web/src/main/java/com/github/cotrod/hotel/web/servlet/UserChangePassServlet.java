@@ -16,10 +16,6 @@ import static com.github.cotrod.hotel.web.WebUtils.forward;
 @WebServlet(urlPatterns = "/changePassword")
 public class UserChangePassServlet extends HttpServlet {
     private AuthService service = DefaultAuthService.getInstance();
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        forward("userChangePassword", req, resp);
-    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -27,13 +23,12 @@ public class UserChangePassServlet extends HttpServlet {
         String oldPassword = req.getParameter("oldPassword");
         String newPassword1 = req.getParameter("newPassword1");
         String newPassword2 = req.getParameter("newPassword2");
-        User user = new User(login,oldPassword);
-        if(service.changePassword(user, newPassword1, newPassword2)){
+        User user = new User(login, oldPassword);
+        if (service.changePassword(user, newPassword1, newPassword2)) {
             req.setAttribute("success", true);
-            forward("userChangePassword", req, resp);
-        }else {
+        } else {
             req.setAttribute("error", true);
-            forward("userChangePassword", req, resp);
         }
+        forward("userSettings", req, resp);
     }
 }

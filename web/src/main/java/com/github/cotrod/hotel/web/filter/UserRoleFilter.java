@@ -11,7 +11,7 @@ import java.io.IOException;
 import static com.github.cotrod.hotel.model.Role.USER;
 import static com.github.cotrod.hotel.web.WebUtils.redirect;
 
-@WebFilter(urlPatterns = "/profile/user/*")
+@WebFilter(urlPatterns = {"/profile/user/*", "/profile"})
 public class UserRoleFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
