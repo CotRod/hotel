@@ -28,7 +28,7 @@ public class AuthorizedFilter implements Filter {
             if (req.getSession().getAttribute("user") == null) {
                 req.getSession().setAttribute("user", userService.getUserByLogin(cookie.get().getValue()));//todo need to check null
             }
-            entryProfile(req, resp); //todo get role from cookie
+            entryProfile(req, resp); //
         } else {
             filterChain.doFilter(req, resp);
         }

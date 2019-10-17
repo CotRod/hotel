@@ -4,6 +4,7 @@ import com.github.cotrod.hotel.dao.DataSource;
 import com.github.cotrod.hotel.dao.UserDao;
 import com.github.cotrod.hotel.model.Role;
 import com.github.cotrod.hotel.model.UserDTO;
+import com.github.cotrod.hotel.model.UserSignupDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +16,7 @@ public class DefaultUserDao implements UserDao {
     private static final Logger log = LoggerFactory.getLogger(DefaultUserDao.class);
 
     private static class SingletonHolder {
-        static final DefaultUserDao HOLDER_INSTANCE = new DefaultUserDao();
+        static final UserDao HOLDER_INSTANCE = new DefaultUserDao();
     }
 
     public static UserDao getInstance() {
@@ -23,32 +24,31 @@ public class DefaultUserDao implements UserDao {
     }
 
     @Override
-    public long save(UserDTO userDTO) {
+    public long save(UserSignupDTO userSignup) {
         Connection connection = null;
         long id;
         try {
             connection = DataSource.getInstance().getConnection();
             connection.setAutoCommit(false);
             try (PreparedStatement statement = connection.prepareStatement("insert into client (first_name,last_name) values (?,?)", Statement.RETURN_GENERATED_KEYS)) {
-                statement.setString(1, userDTO.getFirstName());
-                statement.setString(2, userDTO.getLastName());
+                statement.setString(1, userSignup.getFirstName());
+                statement.setString(2, userSignup.getLastName());
                 statement.executeUpdate();
                 ResultSet rs = statement.getGeneratedKeys();
                 rs.next();
                 id = rs.getLong(1);
-                userDTO.setId(id);
             }
             try (PreparedStatement statement = connection.prepareStatement("insert into user(id,login,password) values (?,?,?)")) {
                 statement.setLong(1, id);
-                statement.setString(2, userDTO.getLogin());
-                statement.setString(3, userDTO.getPassword());
+                statement.setString(2, userSignup.getLogin());
+                statement.setString(3, userSignup.getPassword());
                 statement.executeUpdate();
             }
 
             connection.commit();
             return id;
         } catch (SQLException e) {
-            log.warn("dao.save error {}", userDTO);
+            log.warn("dao.save error {}", userSignup);
             throw new RuntimeException();
         }
     }
@@ -62,7 +62,7 @@ public class DefaultUserDao implements UserDao {
             statement.setString(1, login);
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
-                    return CreateUserDTO(rs);
+                    return createUserDTO(rs);
                 }
             }
             return null;
@@ -79,7 +79,7 @@ public class DefaultUserDao implements UserDao {
             statement.setLong(1, id);
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
-                    return CreateUserDTO(rs);
+                    return createUserDTO(rs);
                 }
             }
             return null;
@@ -92,13 +92,11 @@ public class DefaultUserDao implements UserDao {
     @Override
     public List<UserDTO> getUsers() {
         List<UserDTO> users = new ArrayList<>();
-        UserDTO userDTO;
         try (Connection connection = DataSource.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT * from client join user on client.id = user.id where role='USER'")) {
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                userDTO = CreateUserDTO(rs);
-                users.add(userDTO);
+                users.add(createUserDTO(rs));
             }
             return users;
         } catch (SQLException e) {
@@ -141,13 +139,12 @@ public class DefaultUserDao implements UserDao {
         }
     }
 
-    private UserDTO CreateUserDTO(ResultSet rs) throws SQLException {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(rs.getLong("id"));
-        userDTO.setFirstName(rs.getString("first_name"));
-        userDTO.setLogin(rs.getString("login"));
-        userDTO.setPassword(rs.getString("password"));
-        userDTO.setRole(Role.valueOf(rs.getString("role")));
-        return userDTO;
+    private UserDTO createUserDTO(ResultSet rs) throws SQLException {
+        long id = rs.getLong("id");
+        String login = rs.getString("login");
+        String password = rs.getString("password");
+        Role role = Role.valueOf(rs.getString("role"));
+        String firstName = rs.getString("first_name");
+        return new UserDTO(id, login, password, role, firstName);
     }
 }

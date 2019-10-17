@@ -1,12 +1,13 @@
 package com.github.cotrod.hotel.dao;
 
 import com.github.cotrod.hotel.model.UserDTO;
+import com.github.cotrod.hotel.model.UserSignupDTO;
 
 import java.util.List;
 
 public interface UserDao {
 
-    long save(UserDTO userDTO);
+    long save(UserSignupDTO userSignup);
 
     UserDTO getUserByLogin(String login);
 

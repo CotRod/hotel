@@ -9,6 +9,13 @@ public class HotelRoom {
     public HotelRoom() {
     }
 
+    public HotelRoom(long id, RoomType type, int amountOfRooms, int quantity) {
+        this.id = id;
+        this.type = type;
+        this.amountOfRooms = amountOfRooms;
+        this.quantity = quantity;
+    }
+
     public long getId() {
         return id;
     }

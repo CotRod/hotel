@@ -6,9 +6,16 @@ public class UserDTO {
     private String password;
     private Role role;
     private String firstName;
-    private String lastName;
 
     public UserDTO() {
+    }
+
+    public UserDTO(long id, String login, String password, Role role, String firstName) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.role = role;
+        this.firstName = firstName;
     }
 
     public long getId() {
@@ -49,25 +56,5 @@ public class UserDTO {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    @Override
-    public String toString() {
-        return "UserDTO{" +
-                "id=" + id +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                ", role=" + role +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                '}';
     }
 }

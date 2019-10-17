@@ -1,7 +1,7 @@
 package com.github.cotrod.hotel.web.servlet;
 
-import com.github.cotrod.hotel.model.User;
 import com.github.cotrod.hotel.model.UserDTO;
+import com.github.cotrod.hotel.model.UserLoginDTO;
 import com.github.cotrod.hotel.service.UserService;
 import com.github.cotrod.hotel.service.impl.DefaultUserService;
 import org.slf4j.Logger;
@@ -33,9 +33,8 @@ public class LoginServlet extends HttpServlet {
         UserDTO userDTO = new UserDTO();
         String login = req.getParameter("login");
         String password = req.getParameter("password");
-        User user = new User(login, password);
-        userDTO = userService.getUser(user);
-//        User user = authService.getUser(login, password);
+        UserLoginDTO userLogin = new UserLoginDTO(login, password);
+        userDTO = userService.getUser(userLogin);
 
         if (userDTO != null) {
             req.getSession().setAttribute("user", userDTO);

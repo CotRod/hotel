@@ -1,6 +1,7 @@
 package com.github.cotrod.hotel.web.servlet;
 
 import com.github.cotrod.hotel.model.UserDTO;
+import com.github.cotrod.hotel.model.UserSignupDTO;
 import com.github.cotrod.hotel.service.UserService;
 import com.github.cotrod.hotel.service.impl.DefaultUserService;
 import org.slf4j.Logger;
@@ -33,12 +34,8 @@ public class SignupServlet extends HttpServlet {
         String password = req.getParameter("password");
         String firstName = req.getParameter("firstName");
         String lastName = req.getParameter("lastName");
-        UserDTO userDTO = new UserDTO();
-        userDTO.setLogin(login);
-        userDTO.setPassword(password);
-        userDTO.setFirstName(firstName);
-        userDTO.setLastName(lastName);
-        userDTO = userService.saveUser(userDTO);
+        UserSignupDTO userSignup = new UserSignupDTO(login, password, firstName, lastName);
+        UserDTO userDTO = userService.saveUser(userSignup);
         if (userDTO == null) {
             req.setAttribute("error", true);
             log.warn("user {} couldn't signup", login);
