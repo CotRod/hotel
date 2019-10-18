@@ -44,7 +44,6 @@ public class DefaultUserDao implements UserDao {
                 statement.setString(3, userSignup.getPassword());
                 statement.executeUpdate();
             }
-
             connection.commit();
             return id;
         } catch (SQLException e) {
@@ -60,11 +59,11 @@ public class DefaultUserDao implements UserDao {
              PreparedStatement statement = connection.prepareStatement("SELECT * from client join user on client.id = user.id " +
                      "where login =?")) {
             statement.setString(1, login);
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return createUserDTO(rs);
-                }
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return createUserDTO(rs);
             }
+
             return null;
         } catch (SQLException e) {
             log.warn("Login {} is not exist", login);

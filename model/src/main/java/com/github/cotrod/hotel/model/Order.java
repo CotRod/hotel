@@ -6,11 +6,18 @@ public class Order {
     private long id;
     private long clientId;
     private long roomId;
-    private LocalDate dateMoveIn;
-    private LocalDate dateMoveOut;
+    private LocalDate dateIn;
+    private LocalDate dateOut;
     private Decision decision;
 
     public Order() {
+    }
+
+    public Order(long roomId, long clientId, LocalDate dateIn, LocalDate dateOut) {
+        this.clientId = clientId;
+        this.roomId = roomId;
+        this.dateIn = dateIn;
+        this.dateOut = dateOut;
     }
 
     public long getId() {
@@ -37,20 +44,20 @@ public class Order {
         this.roomId = roomId;
     }
 
-    public LocalDate getDateMoveIn() {
-        return dateMoveIn;
+    public LocalDate getDateIn() {
+        return dateIn;
     }
 
-    public void setDateMoveIn(LocalDate dateMoveIn) {
-        this.dateMoveIn = dateMoveIn;
+    public void setDateIn(LocalDate dateIn) {
+        this.dateIn = dateIn;
     }
 
-    public LocalDate getDateMoveOut() {
-        return dateMoveOut;
+    public LocalDate getDateOut() {
+        return dateOut;
     }
 
-    public void setDateMoveOut(LocalDate dateMoveOut) {
-        this.dateMoveOut = dateMoveOut;
+    public void setDateOut(LocalDate dateOut) {
+        this.dateOut = dateOut;
     }
 
     public Decision getDecision() {

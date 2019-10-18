@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface HotelRoomDao {
     List<HotelRoom> getRooms();
+
+    HotelRoom getRoomById(long id);
 }

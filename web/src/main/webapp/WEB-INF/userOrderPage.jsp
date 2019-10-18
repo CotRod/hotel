@@ -27,6 +27,14 @@
     }
 </style>
 <c:choose>
+    <c:when test="${orderId>0}">
+        <p style="color:green">Номер успешно заказан</p>
+    </c:when>
+    <c:when test="${orderId<0}">
+        <p style="color:red">Нет доступных номеров соответствующих вашему выбору</p>
+    </c:when>
+</c:choose>
+<c:choose>
     <c:when test="${not empty rooms}">
         <div style="display: inline-block">
             <form method="post">
@@ -61,7 +69,9 @@
         </div>
     </c:when>
     <c:when test="${empty rooms}">
-        <p>Нет свободных номеров</p>
+        <c:if test="${empty orderId}">
+            <p>Нет свободных номеров</p>
+        </c:if>
     </c:when>
 
 </c:choose>

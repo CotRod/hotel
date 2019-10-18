@@ -41,6 +41,20 @@ public class DefaultHotelRoomDao implements HotelRoomDao {
         }
     }
 
+    @Override
+    public HotelRoom getRoomById(long id) {
+        try (Connection connection = DataSource.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT *from hotel_room where id=?")) {
+            statement.setLong(1, id);
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return createHotelRoom(rs);
+            } else return null;
+        } catch (SQLException e) {
+            throw new RuntimeException();
+        }
+    }
+
     private HotelRoom createHotelRoom(ResultSet rs) throws SQLException {
         long id = rs.getLong("id");
         RoomType type = RoomType.valueOf(rs.getString("type"));

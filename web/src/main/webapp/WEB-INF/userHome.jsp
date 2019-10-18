@@ -12,6 +12,8 @@
 <body>
 <%@include file="LanguageSubPage.jsp" %>
 <h2><fmt:message key="page.home.welcome" bundle="${msg}"/>, ${user.firstName}!</h2>
+
+
 <p><a href="${pageContext.request.contextPath}/profile/user/order"><fmt:message key="to.order.page"
                                                                                 bundle="${msg}"/></a></p>
 
