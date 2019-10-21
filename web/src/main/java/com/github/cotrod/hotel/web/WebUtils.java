@@ -67,5 +67,12 @@ public class WebUtils {
         }
     }
 
+    public static Role getRole(HttpServletRequest req, HttpServletResponse resp) {
+        UserDTO userDTO = (UserDTO) req.getSession().getAttribute("user");
+        if (userDTO == null) {
+            redirect("login", req, resp);
+        }
+        return userDTO.getRole();
+    }
 
 }

@@ -49,6 +49,12 @@ public class DefaultUserDao implements UserDao {
         } catch (SQLException e) {
             log.warn("dao.save error {}", userSignup);
             throw new RuntimeException();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException();
+            }
         }
     }
 
@@ -122,6 +128,12 @@ public class DefaultUserDao implements UserDao {
         } catch (SQLException e) {
             log.warn("Login {} is not exist", id);
             throw new RuntimeException();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException();
+            }
         }
     }
 

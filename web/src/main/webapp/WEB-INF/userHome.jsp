@@ -10,13 +10,49 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <body>
+<style>
+    table {
+        text-align: center;
+        border-collapse: collapse;
+    }
+
+    td {
+        padding: 10px;
+        border-top: 1px solid black
+    }
+</style>
 <%@include file="LanguageSubPage.jsp" %>
 <h2><fmt:message key="page.home.welcome" bundle="${msg}"/>, ${user.firstName}!</h2>
 
 
 <p><a href="${pageContext.request.contextPath}/profile/user/order"><fmt:message key="to.order.page"
                                                                                 bundle="${msg}"/></a></p>
-
+<c:choose>
+    <c:when test="${empty orders}"><p>Вы еще не заказали номер</p>> </c:when>
+    <c:when test="${not empty orders}">
+        <table>
+            <tr>
+                <th>Date in</th>
+                <th>Date out</th>
+                <th>Type</th>
+                <th>Amount of rooms</th>
+                <th>Decision</th>
+            </tr>
+            <c:forEach var="order" items="${orders}">
+                <tr>
+                    <td>${order.dateIn}</td>
+                    <td>${order.dateOut}</td>
+                    <td><c:choose><c:when test="${order.type == 'STANDARD'}">Standard</c:when>
+                        <c:when test="${order.type == 'DELUXE'}">Deluxe</c:when>
+                        <c:when test="${order.type == 'STUDIO'}">Studio</c:when></c:choose></td>
+                    <td>${order.amountOfRooms}</td>
+                    <td><c:choose><c:when test="${order.decision == 'AWAITING'}">Awaiting</c:when>
+                        <c:when test="${order.decision == 'APPROVED'}">Approved</c:when></c:choose></td>
+                </tr>
+            </c:forEach>
+        </table>
+    </c:when>
+</c:choose>
 <p><a href="${pageContext.request.contextPath}/profile/user/settings"><fmt:message key="to.settings.page"
                                                                                    bundle="${msg}"/></a></p>
 <p><a href="${pageContext.request.contextPath}/logout"><fmt:message key="to.logout" bundle="${msg}"/></a></p>
