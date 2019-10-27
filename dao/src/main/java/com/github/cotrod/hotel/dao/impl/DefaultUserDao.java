@@ -1,14 +1,21 @@
 package com.github.cotrod.hotel.dao.impl;
 
 import com.github.cotrod.hotel.dao.DataSource;
+import com.github.cotrod.hotel.dao.EMUtil;
 import com.github.cotrod.hotel.dao.UserDao;
+import com.github.cotrod.hotel.dao.entity.Client;
+import com.github.cotrod.hotel.dao.entity.User;
 import com.github.cotrod.hotel.model.Role;
 import com.github.cotrod.hotel.model.UserDTO;
 import com.github.cotrod.hotel.model.UserSignupDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+import javax.persistence.EntityManager;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,40 +31,18 @@ public class DefaultUserDao implements UserDao {
     }
 
     @Override
-    public long save(UserSignupDTO userSignup) {
-        Connection connection = null;
-        long id;
-        try {
-            connection = DataSource.getInstance().getConnection();
-            connection.setAutoCommit(false);
-            try (PreparedStatement statement = connection.prepareStatement("insert into client (first_name,last_name) values (?,?)", Statement.RETURN_GENERATED_KEYS)) {
-                statement.setString(1, userSignup.getFirstName());
-                statement.setString(2, userSignup.getLastName());
-                statement.executeUpdate();
-                ResultSet rs = statement.getGeneratedKeys();
-                rs.next();
-                id = rs.getLong(1);
-            }
-            try (PreparedStatement statement = connection.prepareStatement("insert into user(id,login,password) values (?,?,?)")) {
-                statement.setLong(1, id);
-                statement.setString(2, userSignup.getLogin());
-                statement.setString(3, userSignup.getPassword());
-                statement.executeUpdate();
-            }
-            connection.commit();
-            return id;
-        } catch (SQLException e) {
-            log.warn("dao.save error {}", userSignup);
-            throw new RuntimeException();
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
+    public Long save(UserSignupDTO userSignup) {
+        Client client = new Client(userSignup.getFirstName(), userSignup.getLastName());
+        User user = new User(userSignup.getLogin(), userSignup.getPassword());
+        user.setRole(Role.USER);
+        client.setUser(user);
+        user.setClient(client);
+        EntityManager em = EMUtil.getEntityManager();
+        em.getTransaction().begin();
+        em.persist(client);
+        em.getTransaction().commit();
+        EMUtil.closeEMFactory();
+        return client.getId();
     }
 
 

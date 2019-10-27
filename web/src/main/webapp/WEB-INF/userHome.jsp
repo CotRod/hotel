@@ -28,7 +28,7 @@
 <p><a href="${pageContext.request.contextPath}/profile/user/order"><fmt:message key="to.order.page"
                                                                                 bundle="${msg}"/></a></p>
 <c:choose>
-    <c:when test="${empty orders}"><p>Вы еще не заказали номер</p>> </c:when>
+    <c:when test="${empty orders}"><p>Вы еще не заказали номер</p></c:when>
     <c:when test="${not empty orders}">
         <table>
             <tr>

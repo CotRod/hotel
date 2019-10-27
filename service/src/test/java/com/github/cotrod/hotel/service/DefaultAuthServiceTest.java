@@ -2,7 +2,7 @@
 //
 //import com.github.cotrod.hotel.dao.UserDao;
 //import com.github.cotrod.hotel.model.Role;
-//import com.github.cotrod.hotel.model.User;
+//import com.github.cotrod.hotel.dao.entity.User;
 //import com.github.cotrod.hotel.service.impl.DefaultAuthService;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;
