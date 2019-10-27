@@ -47,9 +47,11 @@
                             <c:when test="${order.type == 'STUDIO'}">Studio</c:when></c:choose></td>
                         <td>${order.amountOfRooms}</td>
                         <td>
-                            <c:choose><c:when test="${order.decision == 'AWAITING'}">Awaiting</c:when>
-                                <c:when test="${order.decision == 'APPROVED'}">Approved</c:when></c:choose>
                             <select form="${order.orderId}" name="decision" required>
+                                <option value="${order.decision.toString()}" hidden>
+                                    <c:choose><c:when test="${order.decision == 'AWAITING'}">Awaiting</c:when>
+                                        <c:when test="${order.decision == 'APPROVED'}">Approved</c:when></c:choose>
+                                </option>
                                 <option value="AWAITING">Awaiting</option>
                                 <option value="APPROVED">Approved</option>
                             </select>
