@@ -32,8 +32,8 @@ public class DefaultOrderDao implements OrderDao {
             try (PreparedStatement statement = connection.prepareStatement("INSERT INTO order_t(client_id, room_id, date_in, date_out) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
                 statement.setLong(1, order.getClientId());
                 statement.setLong(2, order.getRoomId());
-                statement.setDate(3, Date.valueOf(order.getDateIn()));
-                statement.setDate(4, Date.valueOf(order.getDateOut()));
+                statement.setObject(3, order.getDateIn());
+                statement.setObject(4, order.getDateOut());
                 statement.executeUpdate();
                 ResultSet rs = statement.getGeneratedKeys();
                 rs.next();
@@ -46,13 +46,15 @@ public class DefaultOrderDao implements OrderDao {
             connection.commit();
             return id;
         } catch (SQLException e) {
-            log.warn("{}", e);
-            throw new RuntimeException();
+            log.warn("", e);
+            throw new RuntimeException(e);
         } finally {
             try {
-                connection.close();
+                if (connection != null) {
+                    connection.close();
+                }
             } catch (SQLException e) {
-                throw new RuntimeException();
+                throw new RuntimeException(e);
             }
         }
     }
@@ -79,7 +81,7 @@ public class DefaultOrderDao implements OrderDao {
             }
             return orders;
         } catch (SQLException e) {
-            log.warn("{}", e);
+            log.warn("", e);
             throw new RuntimeException();
         }
     }
@@ -92,7 +94,7 @@ public class DefaultOrderDao implements OrderDao {
             statement.setLong(2, id);
             statement.executeUpdate();
         } catch (SQLException e) {
-            log.warn("{}", e);
+            log.warn("", e);
             throw new RuntimeException();
         }
     }

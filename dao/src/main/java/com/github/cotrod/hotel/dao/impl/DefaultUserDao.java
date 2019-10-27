@@ -51,9 +51,11 @@ public class DefaultUserDao implements UserDao {
             throw new RuntimeException();
         } finally {
             try {
-                connection.close();
+                if (connection != null) {
+                    connection.close();
+                }
             } catch (SQLException e) {
-                throw new RuntimeException();
+                throw new RuntimeException(e);
             }
         }
     }
@@ -130,9 +132,11 @@ public class DefaultUserDao implements UserDao {
             throw new RuntimeException();
         } finally {
             try {
-                connection.close();
+                if (connection != null) {
+                    connection.close();
+                }
             } catch (SQLException e) {
-                throw new RuntimeException();
+                throw new RuntimeException(e);
             }
         }
     }
