@@ -1,6 +1,7 @@
 package com.github.cotrod.hotel.dao.entity;
 
 import com.github.cotrod.hotel.model.Role;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 
@@ -36,6 +37,7 @@ public class User {
         this.id = id;
     }
 
+    @NaturalId
     @Column(name = "login")
     public String getLogin() {
         return login;

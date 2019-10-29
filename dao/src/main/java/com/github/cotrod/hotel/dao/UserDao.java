@@ -11,11 +11,11 @@ public interface UserDao {
 
     UserDTO getUserByLogin(String login);
 
-    UserDTO getUserById(long id);
+    UserDTO getUserById(Long id);
 
     List<UserDTO> getUsers();
 
-    void deleteUser(long id);
+    void deleteUser(Long id);
 
-    void changePassword(long id, String password);
+    void changePassword(Long id, String password);
 }

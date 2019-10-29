@@ -1,15 +1,16 @@
 package com.github.cotrod.hotel.dao;
 
-import javax.persistence.EntityManager;
+import org.hibernate.Session;
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 public class EMUtil {
     private static EntityManagerFactory emFactory = null;
 
-    public static EntityManager getEntityManager() {
+    public static Session getEntityManager() {
         emFactory = Persistence.createEntityManagerFactory("com.github.cotrod.hotel");
-        return emFactory.createEntityManager();
+        return emFactory.createEntityManager().unwrap(Session.class);
     }
 
     public static void closeEMFactory() {
