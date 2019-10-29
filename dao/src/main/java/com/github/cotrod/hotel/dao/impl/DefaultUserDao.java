@@ -51,11 +51,10 @@ public class DefaultUserDao implements UserDao {
         Session session = EMUtil.getEntityManager().getSession();
         User userFromDB = session.byNaturalId(User.class).using("login", login).load();
         UserDTO userDTO;
+        session.close();
         if (userFromDB != null) {
-            session.close();
             return createUserDTO(userFromDB);
         }
-        session.close();
         return null;
     }
 
@@ -63,11 +62,10 @@ public class DefaultUserDao implements UserDao {
     public UserDTO getUserById(Long id) {
         Session session = EMUtil.getEntityManager().getSession();
         User userFromDB = session.get(User.class, id);
+        session.close();
         if (userFromDB != null) {
-            session.close();
             return createUserDTO(userFromDB);
         }
-        session.close();
         return null;
     }
 
