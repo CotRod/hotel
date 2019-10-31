@@ -5,8 +5,9 @@ import com.github.cotrod.hotel.model.UserSignupDTO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultUserDaoTest {
     Long id;
@@ -36,6 +37,15 @@ public class DefaultUserDaoTest {
         String newPass = "newPass";
         DefaultUserDao.getInstance().changePassword(1L, newPass);
         assertEquals(newPass, DefaultUserDao.getInstance().getUserById(1L).getPassword());
+    }
+
+    @Test
+    void getUsers() {
+        List<UserDTO> users = DefaultUserDao.getInstance().getUsers();
+        UserDTO userFromDB = users.get(0);
+        assertEquals("user", userFromDB.getLogin());
+        assertEquals("Константин", userFromDB.getFirstName());
+        assertNotNull(users);
     }
 
     @Test

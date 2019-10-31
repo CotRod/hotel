@@ -1,6 +1,5 @@
 package com.github.cotrod.hotel.dao.impl;
 
-import com.github.cotrod.hotel.dao.DataSource;
 import com.github.cotrod.hotel.dao.EMUtil;
 import com.github.cotrod.hotel.dao.UserDao;
 import com.github.cotrod.hotel.dao.entity.Client;
@@ -9,13 +8,10 @@ import com.github.cotrod.hotel.model.Role;
 import com.github.cotrod.hotel.model.UserDTO;
 import com.github.cotrod.hotel.model.UserSignupDTO;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,20 +65,18 @@ public class DefaultUserDao implements UserDao {
         return null;
     }
 
-    @Override //todo
+    @Override
     public List<UserDTO> getUsers() {
         List<UserDTO> users = new ArrayList<>();
-        try (Connection connection = DataSource.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * from client join user on client.id = user.id where role='USER'")) {
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                users.add(createUserDTO(rs));
-            }
+        Session session = EMUtil.getEntityManager().getSession();
+        Query query = session.createQuery("from User as us where us.role = 'USER'");
+        query.setReadOnly(true);
+        query.list().forEach(user -> users.add(createUserDTO((User) user)));
+        session.close();
+        if (users.size() > 0) {
             return users;
-        } catch (SQLException e) {
-            log.warn("There are no users :(");
-            throw new RuntimeException();
         }
+        return null;
     }
 
     @Override
@@ -103,15 +97,6 @@ public class DefaultUserDao implements UserDao {
         userFromDB.setPassword(password);
         session.getTransaction().commit();
         session.close();
-    }
-
-    private UserDTO createUserDTO(ResultSet rs) throws SQLException {
-        long id = rs.getLong("id");
-        String login = rs.getString("login");
-        String password = rs.getString("password");
-        Role role = Role.valueOf(rs.getString("role"));
-        String firstName = rs.getString("first_name");
-        return new UserDTO(id, login, password, role, firstName);
     }
 
     private UserDTO createUserDTO(User userFromDB) {
