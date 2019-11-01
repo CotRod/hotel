@@ -1,15 +1,25 @@
 package com.github.cotrod.hotel.dao.impl;
 
 import com.github.cotrod.hotel.dao.DataSource;
+import com.github.cotrod.hotel.dao.EMUtil;
 import com.github.cotrod.hotel.dao.OrderDao;
+import com.github.cotrod.hotel.dao.entity.Client;
+import com.github.cotrod.hotel.dao.entity.HotelRoom;
+import com.github.cotrod.hotel.dao.entity.Order;
 import com.github.cotrod.hotel.model.*;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.github.cotrod.hotel.model.Decision.AWAITING;
 
 public class DefaultOrderDao implements OrderDao {
     private static final Logger log = LoggerFactory.getLogger(DefaultOrderDao.class);
@@ -23,40 +33,26 @@ public class DefaultOrderDao implements OrderDao {
     }
 
     @Override
-    public long makeOrder(Order order) {
-        Connection connection = null;
-        long id;
-        try {
-            connection = DataSource.getInstance().getConnection();
-            connection.setAutoCommit(false);
-            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO order_t(client_id, room_id, date_in, date_out) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
-                statement.setLong(1, order.getClientId());
-                statement.setLong(2, order.getRoomId());
-                statement.setObject(3, order.getDateIn());
-                statement.setObject(4, order.getDateOut());
-                statement.executeUpdate();
-                ResultSet rs = statement.getGeneratedKeys();
-                rs.next();
-                id = rs.getLong(1);
-            }
-            try (PreparedStatement statement = connection.prepareStatement("UPDATE hotel_room set quantity=quantity-1 where id=?")) {
-                statement.setLong(1, order.getRoomId());
-                statement.executeUpdate();
-            }
-            connection.commit();
-            return id;
-        } catch (SQLException e) {
-            log.warn("", e);
-            throw new RuntimeException(e);
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
+    public Long makeOrder(OrderDTO orderDTO) {
+        Session session = EMUtil.getEntityManager().getSession();
+        session.beginTransaction();
+        Order order = new Order();
+        order.setDateIn(orderDTO.getDateIn());
+        order.setDateOut(orderDTO.getDateOut());
+        order.setDecision(AWAITING);
+        Client client = session.get(Client.class, orderDTO.getClientId());
+        HotelRoom hotelRoom = session.get(HotelRoom.class, orderDTO.getRoomId());
+        int quantity = hotelRoom.getQuantity();
+        hotelRoom.setQuantity(--quantity);
+        order.setClient(client);
+        order.setHotelRoom(hotelRoom);
+        hotelRoom.setOrder(order);
+        client.getOrder().add(order);
+        session.save(order);
+        session.saveOrUpdate(hotelRoom);
+        session.getTransaction().commit();
+        session.close();
+        return order.getId();
     }
 
     @Override
@@ -87,7 +83,7 @@ public class DefaultOrderDao implements OrderDao {
     }
 
     @Override
-    public void updateDecision(long id, Decision decision) {
+    public void updateDecision(Long id, Decision decision) {
         try (Connection connection = DataSource.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement("update order_t set decision = ? where id=?")) {
             statement.setString(1, decision.name());
@@ -100,7 +96,7 @@ public class DefaultOrderDao implements OrderDao {
     }
 
     @Override
-    public List<OrderUserDTO> getUserOrders(long userId) {
+    public List<OrderUserDTO> getUserOrders(Long userId) {
         List<OrderUserDTO> orders = new ArrayList<>();
         try (Connection connection = DataSource.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement("select * from order_t join hotel_room on order_t.room_id = hotel_room.id where client_id=?")) {

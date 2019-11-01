@@ -25,8 +25,8 @@ public class DefaultOrderService implements OrderService {
     }
 
     @Override
-    public long makeOrder(Order order) {
-        HotelRoom room = roomDao.getRoomById(order.getRoomId());
+    public long makeOrder(OrderDTO order) {
+        HotelRoomDTO room = roomDao.getRoomById(order.getRoomId());
         if (room != null && room.getQuantity() > 0) {
             return orderDao.makeOrder(order);
         }

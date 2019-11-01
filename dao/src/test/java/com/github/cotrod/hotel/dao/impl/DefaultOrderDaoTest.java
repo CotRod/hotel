@@ -1,31 +1,34 @@
-//package com.github.cotrod.hotel.dao.impl;
-//
-//import com.github.cotrod.hotel.model.Order;
-//import com.github.cotrod.hotel.model.OrderUserDTO;
-//import org.junit.jupiter.api.Test;
-//
-//import java.time.LocalDate;
-//import java.util.List;
-//
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//
-//class DefaultOrderDaoTest {
-//
-//    @Test
-//    void makeOrder() {
-//        Order order = new Order();
-//        LocalDate nowDate = LocalDate.now();
-//        order.setDateIn(nowDate);
-//        order.setDateOut(LocalDate.now());
-//        order.setClientId(2);
-//        order.setRoomId(2);
-//        long id = DefaultOrderDao.getInstance().makeOrder(order);
-//
-//        List<OrderUserDTO> userOrders = DefaultOrderDao.getInstance().getUserOrders(2);
-//        OrderUserDTO orderUserDTO = userOrders.get(userOrders.size() - 1);
-//        LocalDate dateInfromDB = orderUserDTO.getDateIn();
-//        assertEquals(dateInfromDB, nowDate);
-//
-//
-//    }
-//}
+package com.github.cotrod.hotel.dao.impl;
+
+import com.github.cotrod.hotel.dao.EMUtil;
+import com.github.cotrod.hotel.dao.entity.HotelRoom;
+import com.github.cotrod.hotel.model.OrderDTO;
+import com.github.cotrod.hotel.model.RoomType;
+import com.github.cotrod.hotel.model.UserSignupDTO;
+import org.hibernate.Session;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.time.LocalDate;
+
+class DefaultOrderDaoTest {
+    @BeforeAll
+    static void createTables() {
+        DefaultUserDao.getInstance().save(new UserSignupDTO("user", "user", "Konst", "Rodnoy"));
+        HotelRoom hotelRoom = new HotelRoom();
+        hotelRoom.setType(RoomType.STANDARD);
+        hotelRoom.setAmountOfRooms(2);
+        hotelRoom.setQuantity(5);
+        Session session = EMUtil.getEntityManager().getSession();
+        session.beginTransaction();
+        session.save(hotelRoom);
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    @Test
+    void makeOrder() {
+        OrderDTO orderDTO = new OrderDTO(1L, 1L, LocalDate.now(), LocalDate.now());
+        Long id = DefaultOrderDao.getInstance().makeOrder(orderDTO);
+    }
+}

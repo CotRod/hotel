@@ -2,7 +2,7 @@ package com.github.cotrod.hotel.service.impl;
 
 import com.github.cotrod.hotel.dao.HotelRoomDao;
 import com.github.cotrod.hotel.dao.impl.DefaultHotelRoomDao;
-import com.github.cotrod.hotel.model.HotelRoom;
+import com.github.cotrod.hotel.model.HotelRoomDTO;
 import com.github.cotrod.hotel.service.HotelRoomService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class DefaultHotelRoomService implements HotelRoomService {
     }
 
     @Override
-    public List<HotelRoom> getRooms() {
+    public List<HotelRoomDTO> getRooms() {
         return hotelRoomDao.getRooms();
     }
 }

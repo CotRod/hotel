@@ -29,6 +29,7 @@ public class User {
     }
 
     @Id
+    @Column(name = "id")
     public Long getId() {
         return id;
     }
@@ -57,7 +58,7 @@ public class User {
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", columnDefinition = "varchar(10) default 'USER'")
+    @Column(name = "role")
     public Role getRole() {
         return role;
     }

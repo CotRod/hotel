@@ -1,16 +1,15 @@
 package com.github.cotrod.hotel.dao.impl;
 
-import com.github.cotrod.hotel.dao.DataSource;
+import com.github.cotrod.hotel.dao.EMUtil;
 import com.github.cotrod.hotel.dao.HotelRoomDao;
-import com.github.cotrod.hotel.model.HotelRoom;
+import com.github.cotrod.hotel.dao.entity.HotelRoom;
+import com.github.cotrod.hotel.model.HotelRoomDTO;
 import com.github.cotrod.hotel.model.RoomType;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,40 +25,35 @@ public class DefaultHotelRoomDao implements HotelRoomDao {
     }
 
     @Override
-    public List<HotelRoom> getRooms() {
-        List<HotelRoom> rooms = new ArrayList<>();
-        try (Connection connection = DataSource.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * from hotel_room where Quantity>0")) {
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                rooms.add(createHotelRoom(rs));
-            }
+    public List<HotelRoomDTO> getRooms() {
+        List<HotelRoomDTO> rooms = new ArrayList<>();
+        Session session = EMUtil.getEntityManager().getSession();
+        Query query = session.createQuery("from HotelRoom as hr where hr.quantity>0");
+        query.setReadOnly(true);
+        query.list().forEach(room -> rooms.add(createHotelRoom((HotelRoom) room)));
+        session.close();
+        if (rooms.size() > 0) {
             return rooms;
-        } catch (SQLException e) {
-            log.warn("Sql exception {}", e);
-            throw new RuntimeException();
         }
+        return null;
     }
 
     @Override
-    public HotelRoom getRoomById(long id) {
-        try (Connection connection = DataSource.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT *from hotel_room where id=?")) {
-            statement.setLong(1, id);
-            ResultSet rs = statement.executeQuery();
-            if (rs.next()) {
-                return createHotelRoom(rs);
-            } else return null;
-        } catch (SQLException e) {
-            throw new RuntimeException();
+    public HotelRoomDTO getRoomById(Long id) {
+        Session session = EMUtil.getEntityManager().getSession();
+        HotelRoom roomFromDB = session.get(HotelRoom.class, id);
+        session.close();
+        if (roomFromDB != null) {
+            return createHotelRoom(roomFromDB);
         }
+        return null;
     }
 
-    private HotelRoom createHotelRoom(ResultSet rs) throws SQLException {
-        long id = rs.getLong("id");
-        RoomType type = RoomType.valueOf(rs.getString("type"));
-        int amountOfRooms = rs.getInt("amount_of_rooms");
-        int quantity = rs.getInt("quantity");
-        return new HotelRoom(id, type, amountOfRooms, quantity);
+    private HotelRoomDTO createHotelRoom(HotelRoom roomFromDB) {
+        Long id = roomFromDB.getId();
+        RoomType type = roomFromDB.getType();
+        int amountOfRooms = roomFromDB.getAmountOfRooms();
+        int quantity = roomFromDB.getQuantity();
+        return new HotelRoomDTO(id, type, amountOfRooms, quantity);
     }
 }

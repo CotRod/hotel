@@ -1,15 +1,15 @@
 package com.github.cotrod.hotel.model;
 
-public class HotelRoom {
-    private long id;
+public class HotelRoomDTO {
+    private Long id;
     private RoomType type;
     private int amountOfRooms;
     private int quantity;
 
-    public HotelRoom() {
+    public HotelRoomDTO() {
     }
 
-    public HotelRoom(long id, RoomType type, int amountOfRooms, int quantity) {
+    public HotelRoomDTO(Long id, RoomType type, int amountOfRooms, int quantity) {
         this.id = id;
         this.type = type;
         this.amountOfRooms = amountOfRooms;

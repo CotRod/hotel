@@ -2,18 +2,18 @@ package com.github.cotrod.hotel.model;
 
 import java.time.LocalDate;
 
-public class Order {
-    private long id;
-    private long clientId;
-    private long roomId;
+public class OrderDTO {
+    private Long id;
+    private Long clientId;
+    private Long roomId;
     private LocalDate dateIn;
     private LocalDate dateOut;
     private Decision decision;
 
-    public Order() {
+    public OrderDTO() {
     }
 
-    public Order(long roomId, long clientId, LocalDate dateIn, LocalDate dateOut) {
+    public OrderDTO(Long roomId, Long clientId, LocalDate dateIn, LocalDate dateOut) {
         this.clientId = clientId;
         this.roomId = roomId;
         this.dateIn = dateIn;
@@ -24,7 +24,7 @@ public class Order {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -32,7 +32,7 @@ public class Order {
         return clientId;
     }
 
-    public void setClientId(long clientId) {
+    public void setClientId(Long clientId) {
         this.clientId = clientId;
     }
 
@@ -40,7 +40,7 @@ public class Order {
         return roomId;
     }
 
-    public void setRoomId(long roomId) {
+    public void setRoomId(Long roomId) {
         this.roomId = roomId;
     }
 

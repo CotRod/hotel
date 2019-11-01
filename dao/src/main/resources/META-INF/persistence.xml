@@ -6,6 +6,8 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>com.github.cotrod.hotel.dao.entity.User</class>
         <class>com.github.cotrod.hotel.dao.entity.Client</class>
+        <class>com.github.cotrod.hotel.dao.entity.HotelRoom</class>
+        <class>com.github.cotrod.hotel.dao.entity.Order</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>

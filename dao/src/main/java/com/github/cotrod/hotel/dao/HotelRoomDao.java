@@ -1,11 +1,11 @@
 package com.github.cotrod.hotel.dao;
 
-import com.github.cotrod.hotel.model.HotelRoom;
+import com.github.cotrod.hotel.model.HotelRoomDTO;
 
 import java.util.List;
 
 public interface HotelRoomDao {
-    List<HotelRoom> getRooms();
+    List<HotelRoomDTO> getRooms();
 
-    HotelRoom getRoomById(long id);
+    HotelRoomDTO getRoomById(Long id);
 }

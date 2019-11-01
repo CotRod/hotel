@@ -1,7 +1,7 @@
 package com.github.cotrod.hotel.web.servlet;
 
-import com.github.cotrod.hotel.model.HotelRoom;
-import com.github.cotrod.hotel.model.Order;
+import com.github.cotrod.hotel.model.HotelRoomDTO;
+import com.github.cotrod.hotel.model.OrderDTO;
 import com.github.cotrod.hotel.model.UserDTO;
 import com.github.cotrod.hotel.service.HotelRoomService;
 import com.github.cotrod.hotel.service.OrderService;
@@ -26,19 +26,19 @@ public class UserOrderServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<HotelRoom> rooms = hotelRoomService.getRooms();
+        List<HotelRoomDTO> rooms = hotelRoomService.getRooms();
         req.setAttribute("rooms", rooms);
         forward("userOrderPage", req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        long roomId = Long.valueOf(req.getParameter("radio"));
-        long clientId = ((UserDTO) req.getSession().getAttribute("user")).getId();
+        Long roomId = Long.valueOf(req.getParameter("radio"));
+        Long clientId = ((UserDTO) req.getSession().getAttribute("user")).getId();
         LocalDate dateIn = LocalDate.parse(req.getParameter("dateIn"));
         LocalDate dateOut = LocalDate.parse(req.getParameter("dateOut"));
-        Order order = new Order(roomId, clientId, dateIn, dateOut);
-        long orderId = orderService.makeOrder(order);
+        OrderDTO order = new OrderDTO(roomId, clientId, dateIn, dateOut);
+        Long orderId = orderService.makeOrder(order);
         req.setAttribute("orderId", orderId);
         forward("userOrderPage", req, resp);
     }

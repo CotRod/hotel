@@ -1,6 +1,8 @@
 package com.github.cotrod.hotel.dao.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "client")
@@ -9,6 +11,7 @@ public class Client {
     private String firstName;
     private String lastName;
     private User user;
+    private List<Order> orders = new ArrayList<>();
 
     public Client() {
     }
@@ -54,5 +57,14 @@ public class Client {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    public List<Order> getOrder() {
+        return orders;
+    }
+
+    public void setOrder(List<Order> orders) {
+        this.orders = orders;
     }
 }

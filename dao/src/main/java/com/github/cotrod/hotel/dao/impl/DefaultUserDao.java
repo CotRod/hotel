@@ -12,6 +12,9 @@ import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,13 +47,20 @@ public class DefaultUserDao implements UserDao {
 
     @Override
     public UserDTO getUserByLogin(String login) {
-        Session session = EMUtil.getEntityManager().getSession();
-        User userFromDB = session.byNaturalId(User.class).using("login", login).load();
-        UserDTO userDTO;
-        session.close();
-        if (userFromDB != null) {
-            return createUserDTO(userFromDB);
+        CriteriaBuilder cb = EMUtil.getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<User> criteria = cb.createQuery(User.class);
+        Root<User> userRoot = criteria.from(User.class);
+        criteria.select(userRoot).where(cb.equal(userRoot.get("login"), login));
+        List<User> usersFromDB = EMUtil.getEntityManager().createQuery(criteria).getResultList();
+        if (usersFromDB.size() > 0) {
+            return createUserDTO(usersFromDB.get(0));
         }
+//        Session session = EMUtil.getEntityManager().getSession();
+//        User userFromDB = session.byNaturalId(User.class).using("login", login).load();
+//        session.close();
+//        if (userFromDB != null) {
+//            return createUserDTO(userFromDB);
+//        }
         return null;
     }
 
