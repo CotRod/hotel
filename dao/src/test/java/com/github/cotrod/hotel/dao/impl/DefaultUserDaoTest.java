@@ -1,16 +1,18 @@
 package com.github.cotrod.hotel.dao.impl;
 
+import com.github.cotrod.hotel.dao.EMUtil;
 import com.github.cotrod.hotel.model.UserDTO;
 import com.github.cotrod.hotel.model.UserSignupDTO;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultUserDaoTest {
-    Long id;
 
     @BeforeAll
     static void createTestDB() {
@@ -19,7 +21,7 @@ public class DefaultUserDaoTest {
 
     @Test
     void save() {
-        id = DefaultUserDao.getInstance().save(new UserSignupDTO("log", "pass", "Ольга", "привет"));
+        Long id = DefaultUserDao.getInstance().save(new UserSignupDTO("log", "pass", "Ольга", "привет"));
         String nameFromBD = DefaultUserDao.getInstance().getUserById(id).getFirstName();
         assertEquals("Ольга", nameFromBD);
     }
@@ -42,14 +44,20 @@ public class DefaultUserDaoTest {
     @Test
     void getUsers() {
         List<UserDTO> users = DefaultUserDao.getInstance().getUsers();
-        UserDTO userFromDB = users.get(0);
-//        assertEquals("user", userFromDB.getLogin());
-//        assertEquals("Константин", userFromDB.getFirstName());
         assertNotNull(users);
     }
 
     @Test
     void deleteUser() {
-        DefaultUserDao.getInstance().deleteUser(1L);
+        Long id = DefaultUserDao.getInstance().save(new UserSignupDTO("login", "pass", "Ольга", "привет"));
+        DefaultUserDao.getInstance().deleteUser(id);
+    }
+
+    @AfterAll
+    static void clear() {
+        EntityManager em = EMUtil.getEntityManager();
+        if (em != null) {
+            em.close();
+        }
     }
 }

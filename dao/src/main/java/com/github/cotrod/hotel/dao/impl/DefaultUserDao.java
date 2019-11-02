@@ -8,7 +8,6 @@ import com.github.cotrod.hotel.model.Role;
 import com.github.cotrod.hotel.model.UserDTO;
 import com.github.cotrod.hotel.model.UserSignupDTO;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +35,8 @@ public class DefaultUserDao implements UserDao {
         user.setRole(Role.USER);
         client.setUser(user);
         user.setClient(client);
+
+
         Session session = EMUtil.getEntityManager();
         session.beginTransaction();
         session.save(client);
@@ -78,12 +79,14 @@ public class DefaultUserDao implements UserDao {
     @Override
     public List<UserDTO> getUsers() {
         List<UserDTO> users = new ArrayList<>();
-        Session session = EMUtil.getEntityManager().getSession();
-        Query query = session.createQuery("from User as us where us.role = 'USER'");
-        query.setReadOnly(true);
-        query.list().forEach(user -> users.add(createUserDTO((User) user)));
-        session.close();
-        if (users.size() > 0) {
+        CriteriaBuilder cb = EMUtil.getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<User> criteria = cb.createQuery(User.class);
+        Root<User> userRoot = criteria.from(User.class);
+        criteria.select(userRoot).where(cb.equal(userRoot.get("role"), Role.USER));
+        List<User> usersFromDB = EMUtil.getEntityManager().createQuery(criteria).getResultList();
+
+        if (usersFromDB.size() > 0) {
+            usersFromDB.forEach(user -> users.add(createUserDTO((User) user)));
             return users;
         }
         return null;
@@ -110,7 +113,7 @@ public class DefaultUserDao implements UserDao {
     }
 
     private UserDTO createUserDTO(User userFromDB) {
-        long id = userFromDB.getId();
+        long id = userFromDB.getClient().getId();
         String login = userFromDB.getLogin();
         String password = userFromDB.getPassword();
         Role role = userFromDB.getRole();

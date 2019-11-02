@@ -6,10 +6,12 @@ import com.github.cotrod.hotel.dao.entity.HotelRoom;
 import com.github.cotrod.hotel.model.HotelRoomDTO;
 import com.github.cotrod.hotel.model.RoomType;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,12 +29,13 @@ public class DefaultHotelRoomDao implements HotelRoomDao {
     @Override
     public List<HotelRoomDTO> getRooms() {
         List<HotelRoomDTO> rooms = new ArrayList<>();
-        Session session = EMUtil.getEntityManager().getSession();
-        Query query = session.createQuery("from HotelRoom as hr where hr.quantity>0");
-        query.setReadOnly(true);
-        query.list().forEach(room -> rooms.add(createHotelRoom((HotelRoom) room)));
-        session.close();
-        if (rooms.size() > 0) {
+        CriteriaBuilder cb = EMUtil.getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<HotelRoom> criteria = cb.createQuery(HotelRoom.class);
+        Root<HotelRoom> roomRoot = criteria.from(HotelRoom.class);
+        criteria.select(roomRoot);
+        List<HotelRoom> roomsFromDB = EMUtil.getEntityManager().createQuery(criteria).getResultList();
+        if (roomsFromDB.size() > 0) {
+            roomsFromDB.forEach(room -> rooms.add(createHotelRoom((HotelRoom) room)));
             return rooms;
         }
         return null;

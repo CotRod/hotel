@@ -12,7 +12,7 @@
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
             <property name="javax.persistence.jdbc.url"
-                      value="jdbc:mysql://localhost:3306/example?createDatabaseIfNotExist=true&amp;logger=com.mysql.cj.log.StandardLogger&amp;profileSQL=true&amp;serverTimezone=UTC"/>
+                      value="jdbc:mysql://localhost:3306/example?createDatabaseIfNotExist=true&amp;logger=com.mysql.cj.log.StandardLogger&amp;profileSQL=true&amp;serverTimezone=GMT%2B3"/>
             <property name="javax.persistence.jdbc.user" value="root"/>
             <property name="javax.persistence.jdbc.password" value="mySQLpass123"/>
             <property name="hibernate.dialect.storage_engine" value="innodb"/>

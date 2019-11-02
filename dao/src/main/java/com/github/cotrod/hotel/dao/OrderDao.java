@@ -1,18 +1,15 @@
 package com.github.cotrod.hotel.dao;
 
 import com.github.cotrod.hotel.model.Decision;
-import com.github.cotrod.hotel.model.OrderAdminDTO;
+import com.github.cotrod.hotel.model.OrderCreateDTO;
 import com.github.cotrod.hotel.model.OrderDTO;
-import com.github.cotrod.hotel.model.OrderUserDTO;
 
 import java.util.List;
 
 public interface OrderDao {
-    Long makeOrder(OrderDTO order);
+    Long makeOrder(OrderCreateDTO order);
 
-    List<OrderUserDTO> getUserOrders(Long userId);
-
-    List<OrderAdminDTO> getAdminOrders();
+    List<OrderDTO> getOrders(Long userId);
 
     void updateDecision(Long id, Decision decision);
 }

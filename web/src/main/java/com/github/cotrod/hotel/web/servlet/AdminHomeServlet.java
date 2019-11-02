@@ -1,7 +1,7 @@
 package com.github.cotrod.hotel.web.servlet;
 
 import com.github.cotrod.hotel.model.Decision;
-import com.github.cotrod.hotel.model.OrderAdminDTO;
+import com.github.cotrod.hotel.model.OrderDTO;
 import com.github.cotrod.hotel.service.OrderService;
 import com.github.cotrod.hotel.service.UserService;
 import com.github.cotrod.hotel.service.impl.DefaultOrderService;
@@ -25,7 +25,7 @@ public class AdminHomeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<OrderAdminDTO> orders = orderService.getAdminOrders();
+        List<OrderDTO> orders = orderService.getOrders(0L);
         req.setAttribute("orders", orders);
         forward("adminHome", req, resp);
     }

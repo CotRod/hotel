@@ -4,7 +4,10 @@ import com.github.cotrod.hotel.dao.HotelRoomDao;
 import com.github.cotrod.hotel.dao.OrderDao;
 import com.github.cotrod.hotel.dao.impl.DefaultHotelRoomDao;
 import com.github.cotrod.hotel.dao.impl.DefaultOrderDao;
-import com.github.cotrod.hotel.model.*;
+import com.github.cotrod.hotel.model.Decision;
+import com.github.cotrod.hotel.model.HotelRoomDTO;
+import com.github.cotrod.hotel.model.OrderCreateDTO;
+import com.github.cotrod.hotel.model.OrderDTO;
 import com.github.cotrod.hotel.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +28,7 @@ public class DefaultOrderService implements OrderService {
     }
 
     @Override
-    public long makeOrder(OrderDTO order) {
+    public long makeOrder(OrderCreateDTO order) {
         HotelRoomDTO room = roomDao.getRoomById(order.getRoomId());
         if (room != null && room.getQuantity() > 0) {
             return orderDao.makeOrder(order);
@@ -34,13 +37,8 @@ public class DefaultOrderService implements OrderService {
     }
 
     @Override
-    public List<OrderAdminDTO> getAdminOrders() {
-        return orderDao.getAdminOrders();
-    }
-
-    @Override
-    public List<OrderUserDTO> getUserOrders(long userId) {
-        return orderDao.getUserOrders(userId);
+    public List<OrderDTO> getOrders(long userId) {
+        return orderDao.getOrders(userId);
     }
 
     @Override

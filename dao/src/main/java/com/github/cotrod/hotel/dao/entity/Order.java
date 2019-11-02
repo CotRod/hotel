@@ -10,8 +10,6 @@ import java.time.LocalDate;
 @Table(name = "order_t")
 public class Order implements Serializable {
     private Long id;
-    //    private Long clientId;
-//    private Long roomId;
     private LocalDate dateIn;
     private LocalDate dateOut;
     private Decision decision;
@@ -31,26 +29,6 @@ public class Order implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-
-//    @Id
-//    @Column(name = "client_id")
-//    public Long getClientId() {
-//        return clientId;
-//    }
-//
-//    public void setClientId(Long clientId) {
-//        this.clientId = clientId;
-//    }
-//
-//    @Id
-//    @Column(name = "room_id")
-//    public Long getRoomId() {
-//        return roomId;
-//    }
-//
-//    public void setRoomId(Long roomId) {
-//        this.roomId = roomId;
-//    }
 
     @Column(name = "date_in")
     public LocalDate getDateIn() {
@@ -81,7 +59,6 @@ public class Order implements Serializable {
     }
 
     @ManyToOne
-//    @MapsId
     @JoinColumn(name = "client_id")
     public Client getClient() {
         return client;
@@ -91,8 +68,7 @@ public class Order implements Serializable {
         this.client = client;
     }
 
-    @OneToOne
-//    @MapsId
+    @ManyToOne
     @JoinColumn(name = "room_id")
     public HotelRoom getHotelRoom() {
         return hotelRoom;

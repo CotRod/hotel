@@ -9,7 +9,9 @@ public class EMUtil {
     private static EntityManagerFactory emFactory = null;
 
     public static Session getEntityManager() {
-        emFactory = Persistence.createEntityManagerFactory("com.github.cotrod.hotel");
+        if (emFactory == null) {
+            emFactory = Persistence.createEntityManagerFactory("com.github.cotrod.hotel");
+        }
         return emFactory.createEntityManager().unwrap(Session.class);
     }
 

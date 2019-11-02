@@ -3,6 +3,8 @@ package com.github.cotrod.hotel.dao.entity;
 import com.github.cotrod.hotel.model.RoomType;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "hotel_room")
@@ -11,7 +13,7 @@ public class HotelRoom {
     private RoomType type;
     private int amountOfRooms;
     private int quantity;
-    private Order order;
+    private List<Order> orders = new ArrayList<>();
 
     public HotelRoom() {
     }
@@ -55,12 +57,12 @@ public class HotelRoom {
         this.quantity = quantity;
     }
 
-    @OneToOne(mappedBy = "hotelRoom", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    public Order getOrder() {
-        return order;
+    @OneToMany(mappedBy = "hotelRoom", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    public List<Order> getOrder() {
+        return orders;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setOrder(List<Order> orders) {
+        this.orders = orders;
     }
 }

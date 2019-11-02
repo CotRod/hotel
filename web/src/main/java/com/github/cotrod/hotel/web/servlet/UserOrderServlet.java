@@ -1,7 +1,7 @@
 package com.github.cotrod.hotel.web.servlet;
 
 import com.github.cotrod.hotel.model.HotelRoomDTO;
-import com.github.cotrod.hotel.model.OrderDTO;
+import com.github.cotrod.hotel.model.OrderCreateDTO;
 import com.github.cotrod.hotel.model.UserDTO;
 import com.github.cotrod.hotel.service.HotelRoomService;
 import com.github.cotrod.hotel.service.OrderService;
@@ -37,7 +37,7 @@ public class UserOrderServlet extends HttpServlet {
         Long clientId = ((UserDTO) req.getSession().getAttribute("user")).getId();
         LocalDate dateIn = LocalDate.parse(req.getParameter("dateIn"));
         LocalDate dateOut = LocalDate.parse(req.getParameter("dateOut"));
-        OrderDTO order = new OrderDTO(roomId, clientId, dateIn, dateOut);
+        OrderCreateDTO order = new OrderCreateDTO(roomId, clientId, dateIn, dateOut);
         Long orderId = orderService.makeOrder(order);
         req.setAttribute("orderId", orderId);
         forward("userOrderPage", req, resp);
