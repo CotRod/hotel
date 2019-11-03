@@ -51,6 +51,8 @@
                     <url>http://localhost:8080/manager/text</url>
                     <server>myServer</server>
                     <path>/hotel</path>
+                    <username>admin</username>
+                    <password>admin</password>
                 </configuration>
             </plugin>
         </plugins>

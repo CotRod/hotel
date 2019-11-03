@@ -15,6 +15,7 @@ public class LogoutServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         deleteCookie(resp);
+        req.getSession().invalidate();
         redirect("login", req, resp);
     }
 }

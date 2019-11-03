@@ -14,6 +14,8 @@ import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -58,7 +60,7 @@ public class DefaultOrderDao implements OrderDao {
     }
 
     @Override
-    public List<OrderDTO> getOrders(Long userId) {
+    public List<OrderDTO> getOrders(Long userId, int firstResult, int maxResult) {
         List<OrderDTO> orders = new ArrayList<>();
         CriteriaBuilder cb = EMUtil.getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Order> criteria = cb.createQuery(Order.class);
@@ -68,7 +70,10 @@ public class DefaultOrderDao implements OrderDao {
         } else {
             criteria.select(orderRoot).where(cb.equal(orderRoot.get("client"), userId));
         }
-        List<Order> ordersFromDB = EMUtil.getEntityManager().createQuery(criteria).getResultList();
+        TypedQuery<Order> typedQuery = EMUtil.getEntityManager().createQuery(criteria);
+        typedQuery.setFirstResult(firstResult);
+        typedQuery.setMaxResults(maxResult);
+        List<Order> ordersFromDB = typedQuery.getResultList();
         if (ordersFromDB.size() > 0) {
             ordersFromDB.forEach(order -> orders.add(createOrderDTO(order)));
             return orders;
@@ -84,6 +89,23 @@ public class DefaultOrderDao implements OrderDao {
         order.setDecision(decision);
         tx.commit();
         session.close();
+    }
+
+    @Override
+    public long getAmountOfOrders(Long userId) {
+        CriteriaBuilder cb = EMUtil.getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Long> criteria = cb.createQuery(Long.class);
+        Root<Order> orderRoot = criteria.from(Order.class);
+        if (userId == 0) {
+            criteria.select(cb.count(orderRoot));
+        } else {
+            criteria.select(cb.count(orderRoot)).where(cb.equal(orderRoot.get("client"), userId));
+        }
+        try {
+            return EMUtil.getEntityManager().createQuery(criteria).getSingleResult();
+        } catch (NoResultException e) {
+            return 0L;
+        }
     }
 
     private OrderDTO createOrderDTO(Order order) {

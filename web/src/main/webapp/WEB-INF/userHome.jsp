@@ -20,6 +20,11 @@
         padding: 10px;
         border-top: 1px solid black
     }
+
+    .navigation {
+        float: left;
+        margin: 15px;
+    }
 </style>
 <%@include file="LanguageSubPage.jsp" %>
 <h2><fmt:message key="page.home.welcome" bundle="${msg}"/>, ${user.firstName}!</h2>
@@ -53,6 +58,21 @@
         </table>
     </c:when>
 </c:choose>
+<form method="post" style="overflow: auto">
+    <div style="margin-left: 140px;">
+        <c:if test="${pageNum>0}">
+            <div class="navigation">
+                <button type="submit" formmethod="post" name="nav" value="prev"><<</button>
+            </div>
+        </c:if>
+        <div class="navigation"><p>${pageNum + 1}</p></div>
+        <c:if test="${notLast}">
+            <div class="navigation">
+                <button type="submit" formmethod="post" name="nav" value="next">>></button>
+            </div>
+        </c:if>
+    </div>
+</form>
 <p><a href="${pageContext.request.contextPath}/profile/user/settings"><fmt:message key="to.settings.page"
                                                                                    bundle="${msg}"/></a></p>
 <p><a href="${pageContext.request.contextPath}/logout"><fmt:message key="to.logout" bundle="${msg}"/></a></p>

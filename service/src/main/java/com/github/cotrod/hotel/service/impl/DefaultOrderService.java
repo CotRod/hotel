@@ -37,12 +37,22 @@ public class DefaultOrderService implements OrderService {
     }
 
     @Override
-    public List<OrderDTO> getOrders(long userId) {
-        return orderDao.getOrders(userId);
+    public List<OrderDTO> getOrders(Long userId, Integer page) {
+        int maxResult = 3;                                              //todo
+        int firstResult = page * maxResult;
+        return orderDao.getOrders(userId, firstResult, maxResult);
     }
 
     @Override
-    public void updateDecision(long id, Decision decision) {
+    public void updateDecision(Long id, Decision decision) {
         orderDao.updateDecision(id, decision);
+    }
+
+    @Override
+    public boolean isNotLastPage(Long userId, int page) {
+        int maxResult = 3;                                              //todo
+        long amountOfOrders = orderDao.getAmountOfOrders(userId) - 1;
+        long lastPage = amountOfOrders / maxResult;
+        return page < lastPage;
     }
 }

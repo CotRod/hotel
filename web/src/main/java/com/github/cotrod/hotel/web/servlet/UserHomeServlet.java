@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-import static com.github.cotrod.hotel.web.WebUtils.forward;
+import static com.github.cotrod.hotel.web.WebUtils.*;
 
 @WebServlet(urlPatterns = {"/profile/user/home", "/profile/user", "/profile"})
 public class UserHomeServlet extends HttpServlet {
@@ -21,9 +21,16 @@ public class UserHomeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        long userId = ((UserDTO) req.getSession().getAttribute("user")).getId();
-        List<OrderDTO> orders = orderService.getOrders(userId);
+        Long userId = ((UserDTO) req.getSession().getAttribute("user")).getId();
+        Integer page = (Integer) req.getSession().getAttribute("pageNum");
+        List<OrderDTO> orders = orderService.getOrders(userId, page);
         req.setAttribute("orders", orders);
         forward("userHome", req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        setPageNumber(req);
+        redirect("profile/user/home", req, resp);
     }
 }

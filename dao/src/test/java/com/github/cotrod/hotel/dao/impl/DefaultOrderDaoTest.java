@@ -42,9 +42,9 @@ class DefaultOrderDaoTest {
 
     @Test
     void getAdminOrders() {
-        List<OrderDTO> orders = DefaultOrderDao.getInstance().getOrders(0L);
+        List<OrderDTO> orders = DefaultOrderDao.getInstance().getOrders(0L, 0, 3);
         assertNotNull(orders);
-        orders = DefaultOrderDao.getInstance().getOrders(1L);
+        orders = DefaultOrderDao.getInstance().getOrders(1L, 0, 3);
         assertNotNull(orders);
     }
 

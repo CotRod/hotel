@@ -75,4 +75,17 @@ public class WebUtils {
         return userDTO.getRole();
     }
 
+    public static void setPageNumber(HttpServletRequest req) {
+        String navigation = req.getParameter("nav");
+        if (navigation == null) {
+            return;
+        }
+        int currentPage = (int) req.getSession().getAttribute("pageNum");
+        if (navigation.equals("next")) {
+            currentPage++;
+        } else if (navigation.equals("prev")) {
+            currentPage--;
+        }
+        req.getSession().setAttribute("pageNum", currentPage);
+    }
 }

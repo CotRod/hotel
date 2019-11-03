@@ -9,7 +9,9 @@ import java.util.List;
 public interface OrderService {
     long makeOrder(OrderCreateDTO order);
 
-    List<OrderDTO> getOrders(long userId);
+    List<OrderDTO> getOrders(Long userId, Integer page);
 
-    void updateDecision(long id, Decision decision);
+    void updateDecision(Long id, Decision decision);
+
+    boolean isNotLastPage(Long userId, int page);
 }
