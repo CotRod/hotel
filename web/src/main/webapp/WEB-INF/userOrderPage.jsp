@@ -28,10 +28,10 @@
 </style>
 <c:choose>
     <c:when test="${orderId>0}">
-        <p style="color:green">Номер успешно заказан</p>
+        <p style="color:green"><fmt:message key="page.make.order.success" bundle="${msg}"/></p>
     </c:when>
     <c:when test="${orderId<0}">
-        <p style="color:red">Нет доступных номеров соответствующих вашему выбору</p>
+        <p style="color:red"><fmt:message key="page.make.order.no.rooms" bundle="${msg}"/></p>
     </c:when>
 </c:choose>
 <c:choose>
@@ -39,38 +39,44 @@
         <div style="display: inline-block">
             <form method="post">
                 <fieldset>
-                    <legend>Форма заказа</legend>
-                    <p><label for="dateIn">Дата заселение</label> <input required type="date" name="dateIn" id="dateIn">
+                    <legend><fmt:message key="page.make.order.name.form" bundle="${msg}"/></legend>
+                    <p><label for="dateIn"><fmt:message key="table.order.date.in" bundle="${msg}"/></label> <input
+                            required type="date" name="dateIn" id="dateIn">
                     </p>
-                    <p><label for="dateOut">Дата выселения</label> <input required type="date" name="dateOut"
-                                                                          id="dateOut">
+                    <p><label for="dateOut"><fmt:message key="table.order.date.out" bundle="${msg}"/></label> <input
+                            required type="date" name="dateOut"
+                            id="dateOut">
                     </p>
                     <table>
                         <tr>
-                            <th>Chose</th>
-                            <th>Type</th>
-                            <th>Amount of rooms</th>
-                            <th>Quantity</th>
+                            <th><fmt:message key="table.order.choice" bundle="${msg}"/></th>
+                            <th><fmt:message key="table.order.type" bundle="${msg}"/></th>
+                            <th><fmt:message key="table.order.amount" bundle="${msg}"/></th>
+                            <th><fmt:message key="table.order.quantity" bundle="${msg}"/></th>
                         </tr>
                         <c:forEach var="room" items="${rooms}">
                             <tr>
                                 <td><input type="radio" required name="radio" value="${room.id}"></td>
-                                <td><c:choose><c:when test="${room.type == 'STANDARD'}">Standard</c:when>
-                                    <c:when test="${room.type == 'DELUXE'}">Deluxe</c:when>
-                                    <c:when test="${room.type == 'STUDIO'}">Studio</c:when></c:choose></td>
+                                <td><c:choose><c:when test="${room.type == 'STANDARD'}"><fmt:message
+                                        key="order.room.type.standard" bundle="${msg}"/></c:when>
+                                    <c:when test="${room.type == 'DELUXE'}"><fmt:message key="order.room.type.deluxe"
+                                                                                         bundle="${msg}"/></c:when>
+                                    <c:when test="${room.type == 'STUDIO'}"><fmt:message key="order.room.type.studio"
+                                                                                         bundle="${msg}"/></c:when></c:choose></td>
                                 <td>${room.amountOfRooms}</td>
                                 <td>${room.quantity}</td>
                             </tr>
                         </c:forEach>
                     </table>
                 </fieldset>
-                <input type="submit"> <input type="reset">
+                <input type="submit" value="<fmt:message key="btn.submit" bundle="${msg}"/>"> <input type="reset"
+                                                                                                     value="<fmt:message key="btn.reset" bundle="${msg}"/>">
             </form>
         </div>
     </c:when>
     <c:when test="${empty rooms}">
         <c:if test="${empty orderId}">
-            <p>Нет свободных номеров</p>
+            <p><fmt:message key="page.make.order.no.rooms" bundle="${msg}"/></p>
         </c:if>
     </c:when>
 

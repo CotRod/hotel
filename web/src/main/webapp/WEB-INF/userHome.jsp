@@ -37,22 +37,27 @@
     <c:when test="${not empty orders}">
         <table>
             <tr>
-                <th>Date in</th>
-                <th>Date out</th>
-                <th>Type</th>
-                <th>Amount of rooms</th>
-                <th>Decision</th>
+                <th><fmt:message key="table.order.date.in" bundle="${msg}"/></th>
+                <th><fmt:message key="table.order.date.out" bundle="${msg}"/></th>
+                <th><fmt:message key="table.order.type" bundle="${msg}"/></th>
+                <th><fmt:message key="table.order.amount" bundle="${msg}"/></th>
+                <th><fmt:message key="table.order.decision" bundle="${msg}"/></th>
             </tr>
             <c:forEach var="order" items="${orders}">
                 <tr>
                     <td>${order.dateIn}</td>
                     <td>${order.dateOut}</td>
-                    <td><c:choose><c:when test="${order.type == 'STANDARD'}">Standard</c:when>
-                        <c:when test="${order.type == 'DELUXE'}">Deluxe</c:when>
-                        <c:when test="${order.type == 'STUDIO'}">Studio</c:when></c:choose></td>
+                    <td><c:choose><c:when test="${order.type == 'STANDARD'}"><fmt:message key="order.room.type.standard"
+                                                                                          bundle="${msg}"/></c:when>
+                        <c:when test="${order.type == 'DELUXE'}"><fmt:message key="order.room.type.deluxe"
+                                                                              bundle="${msg}"/></c:when>
+                        <c:when test="${order.type == 'STUDIO'}"><fmt:message key="order.room.type.studio"
+                                                                              bundle="${msg}"/></c:when></c:choose></td>
                     <td>${order.amountOfRooms}</td>
-                    <td><c:choose><c:when test="${order.decision == 'AWAITING'}">Awaiting</c:when>
-                        <c:when test="${order.decision == 'APPROVED'}">Approved</c:when></c:choose></td>
+                    <td><c:choose><c:when test="${order.decision == 'AWAITING'}"><fmt:message
+                            key="order.room.decision.awaiting" bundle="${msg}"/></c:when>
+                        <c:when test="${order.decision == 'APPROVED'}"><fmt:message key="order.room.decision.approved"
+                                                                                    bundle="${msg}"/></c:when></c:choose></td>
                 </tr>
             </c:forEach>
         </table>

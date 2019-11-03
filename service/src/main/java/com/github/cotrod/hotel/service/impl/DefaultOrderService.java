@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class DefaultOrderService implements OrderService {
     private static final Logger log = LoggerFactory.getLogger(DefaultOrderService.class);
@@ -38,7 +39,7 @@ public class DefaultOrderService implements OrderService {
 
     @Override
     public List<OrderDTO> getOrders(Long userId, Integer page) {
-        int maxResult = 3;                                              //todo
+        int maxResult = getMaxResult();
         int firstResult = page * maxResult;
         return orderDao.getOrders(userId, firstResult, maxResult);
     }
@@ -50,9 +51,14 @@ public class DefaultOrderService implements OrderService {
 
     @Override
     public boolean isNotLastPage(Long userId, int page) {
-        int maxResult = 3;                                              //todo
+        int maxResult = getMaxResult();
         long amountOfOrders = orderDao.getAmountOfOrders(userId) - 1;
         long lastPage = amountOfOrders / maxResult;
         return page < lastPage;
+    }
+
+    private Integer getMaxResult() {
+        ResourceBundle resource = ResourceBundle.getBundle("const");
+        return Integer.valueOf(resource.getString("amountOfOrdersOnPage"));
     }
 }
