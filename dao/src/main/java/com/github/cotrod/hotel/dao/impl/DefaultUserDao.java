@@ -11,6 +11,7 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.RollbackException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -36,12 +37,17 @@ public class DefaultUserDao implements UserDao {
         client.setUser(user);
         user.setClient(client);
 
-
         Session session = EMUtil.getEntityManager();
-        session.beginTransaction();
-        session.save(client);
-        session.getTransaction().commit();
-        session.close();
+
+        try {
+            session.beginTransaction();
+            session.save(client);
+            session.getTransaction().commit();
+        } catch (RollbackException e) {
+            log.warn("", e);
+        } finally {
+            session.close();
+        }
         return client.getId();
     }
 
@@ -105,11 +111,16 @@ public class DefaultUserDao implements UserDao {
     @Override
     public void changePassword(Long id, String password) {
         Session session = EMUtil.getEntityManager().getSession();
-        session.beginTransaction();
-        User userFromDB = session.get(User.class, id);
-        userFromDB.setPassword(password);
-        session.getTransaction().commit();
-        session.close();
+        try {
+            session.beginTransaction();
+            User userFromDB = session.get(User.class, id);
+            userFromDB.setPassword(password);
+            session.getTransaction().commit();
+        } catch (RollbackException e) {
+            log.warn("", e);
+        } finally {
+            session.close();
+        }
     }
 
     private UserDTO createUserDTO(User userFromDB) {

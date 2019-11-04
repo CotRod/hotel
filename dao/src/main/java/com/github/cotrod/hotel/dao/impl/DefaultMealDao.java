@@ -8,8 +8,13 @@ import com.github.cotrod.hotel.model.TypeOfMeal;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.RollbackException;
 
 public class DefaultMealDao implements MealDao {
+    private static final Logger log = LoggerFactory.getLogger(DefaultMealDao.class);
     private static class SingletonHolder {
         static final MealDao HOLDER_INSTANCE = new DefaultMealDao();
     }
@@ -30,9 +35,14 @@ public class DefaultMealDao implements MealDao {
         order.getMeals().add(meal);
         meal.getOrders().add(order);
 
-        Transaction transaction = session.beginTransaction();
-        session.saveOrUpdate(order);
-        transaction.commit();
-        session.close();
+        try {
+            Transaction transaction = session.beginTransaction();
+            session.saveOrUpdate(order);
+            transaction.commit();
+        } catch (RollbackException e) {
+            log.warn("", e);
+        } finally {
+            session.close();
+        }
     }
 }

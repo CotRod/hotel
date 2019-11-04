@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.NoResultException;
+import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -39,23 +40,29 @@ public class DefaultOrderDao implements OrderDao {
     @Override
     public Long makeOrder(OrderCreateDTO orderDTO) {
         Session session = EMUtil.getEntityManager().getSession();
-        session.beginTransaction();
-        Order order = new Order();
-        order.setDateIn(orderDTO.getDateIn());
-        order.setDateOut(orderDTO.getDateOut());
-        order.setDecision(AWAITING);
-        Client client = session.get(Client.class, orderDTO.getClientId());
-        HotelRoom hotelRoom = session.get(HotelRoom.class, orderDTO.getRoomId());
-        int quantity = hotelRoom.getQuantity();
-        hotelRoom.setQuantity(--quantity);
-        order.setClient(client);
-        order.setHotelRoom(hotelRoom);
-        hotelRoom.getOrder().add(order);
-        client.getOrder().add(order);
-        session.save(order);
-        session.saveOrUpdate(hotelRoom);
-        session.getTransaction().commit();
-        session.close();
+        Order order = null;
+        try {
+            session.beginTransaction();
+            order = new Order();
+            order.setDateIn(orderDTO.getDateIn());
+            order.setDateOut(orderDTO.getDateOut());
+            order.setDecision(AWAITING);
+            Client client = session.get(Client.class, orderDTO.getClientId());
+            HotelRoom hotelRoom = session.get(HotelRoom.class, orderDTO.getRoomId());
+            int quantity = hotelRoom.getQuantity();
+            hotelRoom.setQuantity(--quantity);
+            order.setClient(client);
+            order.setHotelRoom(hotelRoom);
+            hotelRoom.getOrder().add(order);
+            client.getOrder().add(order);
+            session.save(order);
+            session.saveOrUpdate(hotelRoom);
+            session.getTransaction().commit();
+        } catch (RollbackException e) {
+            log.warn("", e);
+        } finally {
+            session.close();
+        }
         return order.getId();
     }
 
@@ -84,11 +91,16 @@ public class DefaultOrderDao implements OrderDao {
     @Override
     public void updateDecision(Long id, Decision decision) {
         Session session = EMUtil.getEntityManager().getSession();
-        Transaction tx = session.beginTransaction();
-        Order order = session.get(Order.class, id);
-        order.setDecision(decision);
-        tx.commit();
-        session.close();
+        try {
+            Transaction tx = session.beginTransaction();
+            Order order = session.get(Order.class, id);
+            order.setDecision(decision);
+            tx.commit();
+        } catch (RollbackException e) {
+            log.warn("", e);
+        } finally {
+            session.close();
+        }
     }
 
     @Override
