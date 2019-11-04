@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.github.cotrod.hotel.web.WebUtils.forward;
+import static com.github.cotrod.hotel.web.WebUtils.redirect;
 
 @WebServlet(urlPatterns = "/profile/user/order")
 public class UserOrderServlet extends HttpServlet {
@@ -39,7 +40,7 @@ public class UserOrderServlet extends HttpServlet {
         LocalDate dateOut = LocalDate.parse(req.getParameter("dateOut"));
         OrderCreateDTO order = new OrderCreateDTO(roomId, clientId, dateIn, dateOut);
         Long orderId = orderService.makeOrder(order);
-        req.setAttribute("orderId", orderId);
-        forward("userOrderPage", req, resp);
+        req.getSession().setAttribute("orderId", orderId); //todo
+        redirect("profile/user/order/meal", req, resp);
     }
 }

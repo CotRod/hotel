@@ -26,14 +26,11 @@
         border-top: 1px solid black
     }
 </style>
-<c:choose>
-    <c:when test="${orderId>0}">
-        <p style="color:green"><fmt:message key="page.make.order.success" bundle="${msg}"/></p>
-    </c:when>
-    <c:when test="${orderId<0}">
-        <p style="color:red"><fmt:message key="page.make.order.no.rooms" bundle="${msg}"/></p>
-    </c:when>
-</c:choose>
+
+<c:if test="${orderId<0}">
+    <p style="color:red"><fmt:message key="page.make.order.no.rooms" bundle="${msg}"/></p>
+</c:if>
+
 <c:choose>
     <c:when test="${not empty rooms}">
         <div style="display: inline-block">

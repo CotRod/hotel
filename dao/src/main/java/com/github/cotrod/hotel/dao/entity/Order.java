@@ -5,6 +5,8 @@ import com.github.cotrod.hotel.model.Decision;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "order_t")
@@ -15,6 +17,7 @@ public class Order implements Serializable {
     private Decision decision;
     private Client client;
     private HotelRoom hotelRoom;
+    private List<Meal> meals = new ArrayList<>();
 
     public Order() {
     }
@@ -76,5 +79,14 @@ public class Order implements Serializable {
 
     public void setHotelRoom(HotelRoom hotelRoom) {
         this.hotelRoom = hotelRoom;
+    }
+
+    @ManyToMany(mappedBy = "orders", cascade = CascadeType.ALL)
+    public List<Meal> getMeals() {
+        return meals;
+    }
+
+    public void setMeals(List<Meal> meals) {
+        this.meals = meals;
     }
 }
