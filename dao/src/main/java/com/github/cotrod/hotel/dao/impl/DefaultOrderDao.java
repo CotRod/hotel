@@ -8,7 +8,6 @@ import com.github.cotrod.hotel.dao.entity.Order;
 import com.github.cotrod.hotel.model.Decision;
 import com.github.cotrod.hotel.model.OrderCreateDTO;
 import com.github.cotrod.hotel.model.OrderDTO;
-import com.github.cotrod.hotel.model.RoomType;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.slf4j.Logger;
@@ -20,11 +19,11 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.cotrod.hotel.model.Decision.AWAITING;
+import static com.github.cotrod.hotel.dao.converter.ConverterToDTO.createOrderDTO;
+import static com.github.cotrod.hotel.dao.converter.ConverterToEntity.createOrderEntity;
 
 public class DefaultOrderDao implements OrderDao {
     private static final Logger log = LoggerFactory.getLogger(DefaultOrderDao.class);
@@ -39,14 +38,9 @@ public class DefaultOrderDao implements OrderDao {
 
     @Override
     public Long makeOrder(OrderCreateDTO orderDTO) {
-        Session session = EMUtil.getEntityManager().getSession();
-        Order order = null;
-        try {
+        try (Session session = EMUtil.getEntityManager().getSession()) {
+            Order order = createOrderEntity(orderDTO);
             session.beginTransaction();
-            order = new Order();
-            order.setDateIn(orderDTO.getDateIn());
-            order.setDateOut(orderDTO.getDateOut());
-            order.setDecision(AWAITING);
             Client client = session.get(Client.class, orderDTO.getClientId());
             HotelRoom hotelRoom = session.get(HotelRoom.class, orderDTO.getRoomId());
             int quantity = hotelRoom.getQuantity();
@@ -58,12 +52,11 @@ public class DefaultOrderDao implements OrderDao {
             session.save(order);
             session.saveOrUpdate(hotelRoom);
             session.getTransaction().commit();
+            return order.getId();
         } catch (RollbackException e) {
-            log.warn("", e);
-        } finally {
-            session.close();
+            log.error("orderDTO: {}", orderDTO, e);
+            return -1L;
         }
-        return order.getId();
     }
 
     @Override
@@ -97,7 +90,7 @@ public class DefaultOrderDao implements OrderDao {
             order.setDecision(decision);
             tx.commit();
         } catch (RollbackException e) {
-            log.warn("", e);
+            log.warn("id: {}, decision: {} ", id, decision, e);
         } finally {
             session.close();
         }
@@ -118,16 +111,5 @@ public class DefaultOrderDao implements OrderDao {
         } catch (NoResultException e) {
             return 0L;
         }
-    }
-
-    private OrderDTO createOrderDTO(Order order) {
-        Long orderId = order.getId();
-        LocalDate dateIn = order.getDateIn();
-        LocalDate dateOut = order.getDateOut();
-        String login = order.getClient().getUser().getLogin();
-        RoomType type = order.getHotelRoom().getType();
-        int amountOfRooms = order.getHotelRoom().getAmountOfRooms();
-        Decision decision = order.getDecision();
-        return new OrderDTO(orderId, dateIn, dateOut, login, type, amountOfRooms, decision);
     }
 }

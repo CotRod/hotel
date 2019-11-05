@@ -1,6 +1,8 @@
 package com.github.cotrod.hotel.dao.entity;
 
 import com.github.cotrod.hotel.model.TypeOfMeal;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ public class Meal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     public Long getId() {
         return id;
     }

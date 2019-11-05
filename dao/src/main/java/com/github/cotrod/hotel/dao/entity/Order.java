@@ -1,6 +1,8 @@
 package com.github.cotrod.hotel.dao.entity;
 
 import com.github.cotrod.hotel.model.Decision;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -25,6 +27,7 @@ public class Order implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     public Long getId() {
         return id;
     }

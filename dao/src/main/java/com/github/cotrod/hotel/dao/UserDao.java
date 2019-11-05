@@ -1,5 +1,6 @@
 package com.github.cotrod.hotel.dao;
 
+import com.github.cotrod.hotel.model.Role;
 import com.github.cotrod.hotel.model.UserDTO;
 import com.github.cotrod.hotel.model.UserSignupDTO;
 
@@ -13,7 +14,7 @@ public interface UserDao {
 
     UserDTO getUserById(Long id);
 
-    List<UserDTO> getUsers();
+    List<UserDTO> getUsers(Role role);
 
     void deleteUser(Long id);
 

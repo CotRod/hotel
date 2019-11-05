@@ -5,6 +5,7 @@ public class UserSignupDTO {
     private String password;
     private String firstName;
     private String lastName;
+    private Role role;
 
     public UserSignupDTO(String login, String password, String firstName, String lastName) {
         this.login = login;
@@ -27,5 +28,13 @@ public class UserSignupDTO {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

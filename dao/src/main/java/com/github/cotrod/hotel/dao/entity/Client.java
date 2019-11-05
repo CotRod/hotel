@@ -1,11 +1,15 @@
 package com.github.cotrod.hotel.dao.entity;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "client")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Client {
     private Long id;
     private String firstName;
@@ -14,11 +18,6 @@ public class Client {
     private List<Order> orders = new ArrayList<>();
 
     public Client() {
-    }
-
-    public Client(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
     }
 
     @Id

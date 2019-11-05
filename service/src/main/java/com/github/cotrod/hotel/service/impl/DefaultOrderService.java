@@ -32,9 +32,10 @@ public class DefaultOrderService implements OrderService {
     public long makeOrder(OrderCreateDTO order) {
         HotelRoomDTO room = roomDao.getRoomById(order.getRoomId());
         if (room != null && room.getQuantity() > 0) {
+            order.setDecision(Decision.AWAITING);
             return orderDao.makeOrder(order);
         }
-        return -1;
+        return -1L;
     }
 
     @Override

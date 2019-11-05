@@ -2,10 +2,7 @@ package com.github.cotrod.hotel.service.impl;
 
 import com.github.cotrod.hotel.dao.UserDao;
 import com.github.cotrod.hotel.dao.impl.DefaultUserDao;
-import com.github.cotrod.hotel.model.ChangePassDTO;
-import com.github.cotrod.hotel.model.UserDTO;
-import com.github.cotrod.hotel.model.UserLoginDTO;
-import com.github.cotrod.hotel.model.UserSignupDTO;
+import com.github.cotrod.hotel.model.*;
 import com.github.cotrod.hotel.service.UserService;
 
 import java.util.List;
@@ -36,6 +33,7 @@ public class DefaultUserService implements UserService {
     public UserDTO saveUser(UserSignupDTO userSignup) {
         UserDTO userFromBD = getUserByLogin(userSignup.getLogin());
         if (userFromBD == null) {
+            userSignup.setRole(Role.USER);
             long id = userDao.save(userSignup);
             return userDao.getUserById(id);
         }
@@ -49,7 +47,8 @@ public class DefaultUserService implements UserService {
 
     @Override
     public List<UserDTO> getUsers() {
-        return userDao.getUsers();
+        Role role = Role.USER;
+        return userDao.getUsers(role);
     }
 
     @Override

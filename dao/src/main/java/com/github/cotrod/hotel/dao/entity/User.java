@@ -1,12 +1,15 @@
 package com.github.cotrod.hotel.dao.entity;
 
 import com.github.cotrod.hotel.model.Role;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "user")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User {
     private Long id;
     private String login;
@@ -15,17 +18,6 @@ public class User {
     private Client client;
 
     public User() {
-    }
-
-    public User(String login, String password, Role role) {
-        this.login = login;
-        this.password = password;
-        this.role = role;
-    }
-
-    public User(String login, String password) {
-        this.login = login;
-        this.password = password;
     }
 
     @Id

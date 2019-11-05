@@ -18,6 +18,10 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.cotrod.hotel.dao.converter.ConverterToDTO.createUserDTO;
+import static com.github.cotrod.hotel.dao.converter.ConverterToEntity.createClientEntity;
+import static com.github.cotrod.hotel.dao.converter.ConverterToEntity.createUserEntity;
+
 public class DefaultUserDao implements UserDao {
     private static final Logger log = LoggerFactory.getLogger(DefaultUserDao.class);
 
@@ -31,22 +35,18 @@ public class DefaultUserDao implements UserDao {
 
     @Override
     public Long save(UserSignupDTO userSignup) {
-        Client client = new Client(userSignup.getFirstName(), userSignup.getLastName());
-        User user = new User(userSignup.getLogin(), userSignup.getPassword());
-        user.setRole(Role.USER);
+        Client client = createClientEntity(userSignup);
+        User user = createUserEntity(userSignup);
+
         client.setUser(user);
         user.setClient(client);
 
-        Session session = EMUtil.getEntityManager();
-
-        try {
+        try (Session session = EMUtil.getEntityManager()) {
             session.beginTransaction();
             session.save(client);
             session.getTransaction().commit();
         } catch (RollbackException e) {
-            log.warn("", e);
-        } finally {
-            session.close();
+            log.warn("userSignup: {}", userSignup, e);
         }
         return client.getId();
     }
@@ -83,12 +83,12 @@ public class DefaultUserDao implements UserDao {
     }
 
     @Override
-    public List<UserDTO> getUsers() {
+    public List<UserDTO> getUsers(Role role) {
         List<UserDTO> users = new ArrayList<>();
         CriteriaBuilder cb = EMUtil.getEntityManager().getCriteriaBuilder();
         CriteriaQuery<User> criteria = cb.createQuery(User.class);
         Root<User> userRoot = criteria.from(User.class);
-        criteria.select(userRoot).where(cb.equal(userRoot.get("role"), Role.USER));
+        criteria.select(userRoot).where(cb.equal(userRoot.get("role"), role));
         List<User> usersFromDB = EMUtil.getEntityManager().createQuery(criteria).getResultList();
 
         if (usersFromDB.size() > 0) {
@@ -110,25 +110,13 @@ public class DefaultUserDao implements UserDao {
 
     @Override
     public void changePassword(Long id, String password) {
-        Session session = EMUtil.getEntityManager().getSession();
-        try {
+        try (Session session = EMUtil.getEntityManager().getSession()) {
             session.beginTransaction();
             User userFromDB = session.get(User.class, id);
             userFromDB.setPassword(password);
             session.getTransaction().commit();
         } catch (RollbackException e) {
-            log.warn("", e);
-        } finally {
-            session.close();
+            log.warn("id: {}, password: {} ", id, password, e);
         }
-    }
-
-    private UserDTO createUserDTO(User userFromDB) {
-        long id = userFromDB.getClient().getId();
-        String login = userFromDB.getLogin();
-        String password = userFromDB.getPassword();
-        Role role = userFromDB.getRole();
-        String firstName = userFromDB.getClient().getFirstName();
-        return new UserDTO(id, login, password, role, firstName);
     }
 }

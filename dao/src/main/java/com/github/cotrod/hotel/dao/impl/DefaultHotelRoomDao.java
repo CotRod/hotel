@@ -4,7 +4,6 @@ import com.github.cotrod.hotel.dao.EMUtil;
 import com.github.cotrod.hotel.dao.HotelRoomDao;
 import com.github.cotrod.hotel.dao.entity.HotelRoom;
 import com.github.cotrod.hotel.model.HotelRoomDTO;
-import com.github.cotrod.hotel.model.RoomType;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +13,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.github.cotrod.hotel.dao.converter.ConverterToDTO.createHotelRoomDTO;
 
 public class DefaultHotelRoomDao implements HotelRoomDao {
     private static final Logger log = LoggerFactory.getLogger(DefaultHotelRoomDao.class);
@@ -35,7 +36,7 @@ public class DefaultHotelRoomDao implements HotelRoomDao {
         criteria.select(roomRoot);
         List<HotelRoom> roomsFromDB = EMUtil.getEntityManager().createQuery(criteria).getResultList();
         if (roomsFromDB.size() > 0) {
-            roomsFromDB.forEach(room -> rooms.add(createHotelRoom((HotelRoom) room)));
+            roomsFromDB.forEach(room -> rooms.add(createHotelRoomDTO((HotelRoom) room)));
             return rooms;
         }
         return null;
@@ -47,16 +48,10 @@ public class DefaultHotelRoomDao implements HotelRoomDao {
         HotelRoom roomFromDB = session.get(HotelRoom.class, id);
         session.close();
         if (roomFromDB != null) {
-            return createHotelRoom(roomFromDB);
+            return createHotelRoomDTO(roomFromDB);
         }
         return null;
     }
 
-    private HotelRoomDTO createHotelRoom(HotelRoom roomFromDB) {
-        Long id = roomFromDB.getId();
-        RoomType type = roomFromDB.getType();
-        int amountOfRooms = roomFromDB.getAmountOfRooms();
-        int quantity = roomFromDB.getQuantity();
-        return new HotelRoomDTO(id, type, amountOfRooms, quantity);
-    }
+
 }

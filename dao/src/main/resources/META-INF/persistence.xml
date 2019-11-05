@@ -26,7 +26,6 @@
             <property name="hibernate.cache.use_second_level_cache" value="true"/>
             <property name="hibernate.cache.use_query_cache" value="true"/>
             <property name="hibernate.cache.auto_evict_collection_cache" value="true"/>
-            <property name="net.sf.ehcache.configurationResourceName" value="ehcache.xml"/>
         </properties>
     </persistence-unit>
 </persistence>
