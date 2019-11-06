@@ -1,6 +1,7 @@
 package com.github.cotrod.hotel.dao.impl;
 
 import com.github.cotrod.hotel.dao.EMUtil;
+import com.github.cotrod.hotel.model.Role;
 import com.github.cotrod.hotel.model.UserDTO;
 import com.github.cotrod.hotel.model.UserSignupDTO;
 import org.junit.jupiter.api.AfterAll;
@@ -43,14 +44,16 @@ public class DefaultUserDaoTest {
 
     @Test
     void getUsers() {
-        List<UserDTO> users = DefaultUserDao.getInstance().getUsers();
+        List<UserDTO> users = DefaultUserDao.getInstance().getUsers(Role.USER);
         assertNotNull(users);
     }
 
     @Test
     void deleteUser() {
         Long id = DefaultUserDao.getInstance().save(new UserSignupDTO("login", "pass", "Ольга", "привет"));
+        assertNotNull(DefaultUserDao.getInstance().getUserById(id));
         DefaultUserDao.getInstance().deleteUser(id);
+        assertNull(DefaultUserDao.getInstance().getUserById(id));
     }
 
     @AfterAll
