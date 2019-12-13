@@ -1,66 +1,70 @@
 package com.github.cotrod.hotel.dao.impl;
 
-import com.github.cotrod.hotel.dao.EMUtil;
+import com.github.cotrod.hotel.dao.UserDao;
+import com.github.cotrod.hotel.dao.config.DaoConfig;
 import com.github.cotrod.hotel.model.Role;
 import com.github.cotrod.hotel.model.UserDTO;
 import com.github.cotrod.hotel.model.UserSignupDTO;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = DaoConfig.class)
+@Transactional
 public class DefaultUserDaoTest {
-
-    @BeforeAll
-    static void createTestDB() {
-        DefaultUserDao.getInstance().save(new UserSignupDTO("user", "user", "Константин", "Родной"));
-    }
+    @Autowired
+    UserDao dao;
 
     @Test
     void save() {
-        Long id = DefaultUserDao.getInstance().save(new UserSignupDTO("log", "pass", "Ольга", "привет"));
-        String nameFromBD = DefaultUserDao.getInstance().getUserById(id).getFirstName();
+        Long id = dao.save(new UserSignupDTO("log", "pass", "Ольга", "привет", Role.USER));
+        assertNotNull(id);
+        String nameFromBD = dao.getUserById(id).getFirstName();
+        String loginFromDB = dao.getUserById(id).getLogin();
         assertEquals("Ольга", nameFromBD);
+        assertEquals("log", loginFromDB);
     }
 
     @Test
     void getUserByLogin() {
-        String firstName = DefaultUserDao.getInstance().getUserByLogin("user").getFirstName();
-        UserDTO userNull = DefaultUserDao.getInstance().getUserByLogin("user1");
+        dao.save(new UserSignupDTO("user", "pass", "Константин", "привет", Role.USER));
+        String firstName = dao.getUserByLogin("user").getFirstName();
+        UserDTO userNull = dao.getUserByLogin("user1");
         assertEquals("Константин", firstName);
         assertNull(userNull);
     }
 
     @Test
     void changePassword() {
+        Long id = dao.save(new UserSignupDTO("user", "pass", "Константин", "привет", Role.USER));
         String newPass = "newPass";
-        DefaultUserDao.getInstance().changePassword(1L, newPass);
-        assertEquals(newPass, DefaultUserDao.getInstance().getUserById(1L).getPassword());
+        dao.changePassword(id, newPass);
+        assertEquals(newPass, dao.getUserById(id).getPassword());
     }
 
     @Test
     void getUsers() {
-        List<UserDTO> users = DefaultUserDao.getInstance().getUsers(Role.USER);
+        List<UserDTO> users = dao.getUsers(Role.USER);
         assertNotNull(users);
+        assertEquals(0, users.size());
+        dao.save(new UserSignupDTO("user", "pass", "Константин", "привет", Role.USER));
+        users = dao.getUsers(Role.USER);
+        assertEquals(1, users.size());
     }
 
     @Test
     void deleteUser() {
-        Long id = DefaultUserDao.getInstance().save(new UserSignupDTO("login", "pass", "Ольга", "привет"));
-        assertNotNull(DefaultUserDao.getInstance().getUserById(id));
-        DefaultUserDao.getInstance().deleteUser(id);
-        assertNull(DefaultUserDao.getInstance().getUserById(id));
-    }
-
-    @AfterAll
-    static void clear() {
-        EntityManager em = EMUtil.getEntityManager();
-        if (em != null) {
-            em.close();
-        }
+        Long id = dao.save(new UserSignupDTO("login", "pass", "Ольга", "привет", Role.USER));
+        assertNotNull(dao.getUserById(id));
+        dao.deleteUser(id);
+        assertNull(dao.getUserById(id));
     }
 }

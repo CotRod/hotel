@@ -14,7 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,13 +39,7 @@ public class DefaultOrderServiceTest {
 
     @Test
     void getOrdersTest() {
-        when(orderDao.getOrders(3L, 0, 3)).thenReturn(null);
+        when(orderDao.getOrders(3L, 0)).thenReturn(null);
         assertNull(service.getOrders(3L, 0));
-    }
-
-    @Test
-    void isNotLastPageTest() {
-        when(orderDao.getAmountOfOrders(1L)).thenReturn(10L);
-        assertTrue(service.isNotLastPage(1L, 2));
     }
 }

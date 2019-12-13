@@ -1,58 +1,75 @@
 package com.github.cotrod.hotel.dao.impl;
 
-import com.github.cotrod.hotel.dao.EMUtil;
+import com.github.cotrod.hotel.dao.OrderDao;
+import com.github.cotrod.hotel.dao.UserDao;
+import com.github.cotrod.hotel.dao.config.DaoConfig;
 import com.github.cotrod.hotel.dao.entity.HotelRoom;
+import com.github.cotrod.hotel.dao.repository.HotelRoomRepository;
 import com.github.cotrod.hotel.model.OrderCreateDTO;
 import com.github.cotrod.hotel.model.OrderDTO;
 import com.github.cotrod.hotel.model.RoomType;
 import com.github.cotrod.hotel.model.UserSignupDTO;
-import org.hibernate.Session;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = DaoConfig.class)
+@Transactional
 class DefaultOrderDaoTest {
-    @BeforeAll
-    static void createTables() {
-        DefaultUserDao.getInstance().save(new UserSignupDTO("orderUser", "user", "Konst", "Rodnoy"));
+    @Autowired
+    UserDao userDao;
+    @Autowired
+    OrderDao orderDao;
+    @Autowired
+    HotelRoomRepository roomRepository;
+
+    @Test
+    void makeOrder() {
+        Long clientId = userDao.save(new UserSignupDTO("orderUser", "user", "Konst", "Rodnoy"));
         HotelRoom hotelRoom = new HotelRoom();
         hotelRoom.setType(RoomType.STANDARD);
         hotelRoom.setAmountOfRooms(2);
         hotelRoom.setQuantity(5);
-        Session session = EMUtil.getEntityManager().getSession();
-        session.beginTransaction();
-        session.save(hotelRoom);
-        session.getTransaction().commit();
-        session.close();
-        OrderCreateDTO orderDTO = new OrderCreateDTO(1L, 1L, LocalDate.now(), LocalDate.now());
-        Long id = DefaultOrderDao.getInstance().makeOrder(orderDTO);
+        HotelRoom hotelRoom1 = roomRepository.save(hotelRoom);
+        Long hotelRoomId = hotelRoom1.getId();
+
+        OrderCreateDTO orderDTO = new OrderCreateDTO(hotelRoomId, clientId, LocalDate.now(), LocalDate.now());
+
+        Long id = orderDao.makeOrder(orderDTO);
+        assertNotNull(id);
+        assertEquals(4, roomRepository.getOne(hotelRoomId).getQuantity());
     }
 
     @Test
-    void makeOrder() {
-        OrderCreateDTO orderDTO = new OrderCreateDTO(1L, 1L, LocalDate.now(), LocalDate.now());
-        Long id = DefaultOrderDao.getInstance().makeOrder(orderDTO);
-    }
+    void getOrders() {
+        Long userId = userDao.save(new UserSignupDTO("orderUser", "user", "Konst", "Rodnoy"));
+        HotelRoom hotelRoom = new HotelRoom();
+        hotelRoom.setType(RoomType.STANDARD);
+        hotelRoom.setAmountOfRooms(2);
+        hotelRoom.setQuantity(5);
+        HotelRoom hotelRoom1 = roomRepository.save(hotelRoom);
+        Long hotelRoomId = hotelRoom1.getId();
 
-    @Test
-    void getAdminOrders() {
-        List<OrderDTO> orders = DefaultOrderDao.getInstance().getOrders(0L, 0, 3);
+        OrderCreateDTO orderDTO = new OrderCreateDTO(hotelRoomId, userId, LocalDate.now(), LocalDate.now());
+        orderDao.makeOrder(orderDTO);
+        List<OrderDTO> orders = orderDao.getOrders(2L, 0);
         assertNotNull(orders);
-        orders = DefaultOrderDao.getInstance().getOrders(1L, 0, 3);
+        assertEquals(0, orders.size());
+        orders = orderDao.getOrders(0L, 0);
         assertNotNull(orders);
-    }
-
-    @AfterAll
-    static void clear() {
-        EntityManager em = EMUtil.getEntityManager();
-        if (em != null) {
-            em.close();
-        }
+        assertEquals(1, orders.size());
+        orders = orderDao.getOrders(0L, 0);
+        assertNotNull(orders);
+        assertEquals(1, orders.size());
+        assertTrue(orderDao.isLastPage(1L, 1));
     }
 }

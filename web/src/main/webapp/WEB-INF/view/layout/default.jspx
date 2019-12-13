@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?> <!--Нужна ли эта строка?-->
+<html xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:tiles="http://tiles.apache.org/tags-tiles">
+
+    <jsp:output doctype-public="-//W3C//DTD XHTML 1.1//EN"
+                doctype-system="http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"
+                doctype-root-element="html" omit-xml-declaration="false"/>
+    <jsp:directive.page pageEncoding="UTF-8" contentType="text/html; UTF-8"/>
+
+    <head>
+        <title>
+            <tiles:getAsString name="title"/>
+        </title>
+    </head>
+    <body>
+        <tiles:insertAttribute name="language"/>
+        <tiles:insertAttribute name="body"/>
+    </body>
+</html>

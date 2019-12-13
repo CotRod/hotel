@@ -1,0 +1,13 @@
+<jsp:root xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          version="2.0" xmlns:tiles="http://tiles.apache.org/tags-tiles">
+
+    <fmt:setLocale value="${locale}"/>
+    <fmt:setBundle basename="translations" var="msg"/>
+    <tiles:insertAttribute name="set1"/>
+    <h1><fmt:message key="page.settings" bundle="${msg}"/></h1>
+    <p><a href="${pageContext.request.contextPath}/profile/user/home"><fmt:message key="to.page.home" bundle="${msg}"/></a>
+    </p>
+    <p><a href="${pageContext.request.contextPath}/logout"><fmt:message key="to.logout" bundle="${msg}"/></a></p>
+</jsp:root>

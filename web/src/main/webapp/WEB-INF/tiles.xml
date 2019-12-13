@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+        "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+    <definition name="default" template="/WEB-INF/view/layout/default.jspx">
+        <put-attribute name="title" value=""/>
+        <put-attribute name="language" value="/WEB-INF/view/common/LanguageSubPage.jspx"/>
+        <put-attribute name="body" value=""/>
+    </definition>
+
+    <definition name="login" extends="default">
+        <put-attribute name="title" value="Login"/>
+        <put-attribute name="body" value="/WEB-INF/view/page/login.jspx"/>
+    </definition>
+
+    <definition name="signup" extends="default">
+        <put-attribute name="title" value="Signup"/>
+        <put-attribute name="body" value="/WEB-INF/view/page/signup.jspx"/>
+    </definition>
+
+    <definition name="adminHome" extends="default">
+        <put-attribute name="title" value="adminHome"/>
+        <put-attribute name="body" value="/WEB-INF/view/page/adminHome.jspx"/>
+    </definition>
+
+    <definition name="userHome" extends="default">
+        <put-attribute name="title" value="userHome"/>
+        <put-attribute name="body" value="/WEB-INF/view/page/userHome.jspx"/>
+    </definition>
+
+    <definition name="userMeal" extends="default">
+        <put-attribute name="title" value="userMeal"/>
+        <put-attribute name="body" value="/WEB-INF/view/page/userMealPage.jspx"/>
+    </definition>
+
+    <definition name="userOrderPage" extends="default">
+        <put-attribute name="title" value="userOrderPage"/>
+        <put-attribute name="body" value="/WEB-INF/view/page/userOrderPage.jspx"/>
+    </definition>
+
+    <definition name="userSettings" extends="default">
+        <put-attribute name="title" value="Settings"/>
+        <put-attribute name="body" value="/WEB-INF/view/page/userSettings.jspx"/>
+        <put-attribute name="set1" value="/WEB-INF/view/common/changePassword.jspx"/>
+    </definition>
+
+</tiles-definitions>

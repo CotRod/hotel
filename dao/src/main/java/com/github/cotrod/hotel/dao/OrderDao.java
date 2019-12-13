@@ -9,9 +9,9 @@ import java.util.List;
 public interface OrderDao {
     Long makeOrder(OrderCreateDTO order);
 
-    List<OrderDTO> getOrders(Long userId, int startResult, int maxResult);
+    List<OrderDTO> getOrders(Long userId, int page);
 
     void updateDecision(Long id, Decision decision);
 
-    long getAmountOfOrders(Long userId);
+    boolean isLastPage(Long userId, int page);
 }

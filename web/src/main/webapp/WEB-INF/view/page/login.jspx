@@ -1,0 +1,24 @@
+<jsp:root xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+          version="2.0">
+
+    <fmt:setLocale value="${locale}"/>
+    <fmt:setBundle basename="translations" var="messages"/>
+
+    <h2><fmt:message key="page.login.log.in" bundle="${messages}"/></h2>
+    <form method="post">
+        <input type="text" required="required" placeholder="<fmt:message key='placeholder.login' bundle='${messages}'/>"
+               name="login"/>
+        <input type="password" required="required"
+               placeholder="<fmt:message key='placeholder.password' bundle='${messages}'/>"
+               name="password"/>
+        <input type="submit" value="<fmt:message key='page.login.log.in' bundle='${messages}'/>"/>
+    </form>
+    <c:if test="${error}">
+        <p style="color:red"><fmt:message key="page.login.error" bundle="${messages}"/></p>
+    </c:if>
+    <p><a href="${pageContext.request.contextPath}/signup"><fmt:message key="to.page.signup" bundle="${messages}"/></a>
+    </p>
+</jsp:root>

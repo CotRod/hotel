@@ -14,6 +14,14 @@ public class UserSignupDTO {
         this.lastName = lastName;
     }
 
+    public UserSignupDTO(String login, String password, String firstName, String lastName, Role role) {
+        this.login = login;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.role = role;
+    }
+
     public String getLogin() {
         return login;
     }

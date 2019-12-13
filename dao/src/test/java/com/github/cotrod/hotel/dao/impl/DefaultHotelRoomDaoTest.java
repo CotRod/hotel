@@ -1,50 +1,62 @@
 package com.github.cotrod.hotel.dao.impl;
 
-import com.github.cotrod.hotel.dao.EMUtil;
+import com.github.cotrod.hotel.dao.HotelRoomDao;
+import com.github.cotrod.hotel.dao.config.DaoConfig;
 import com.github.cotrod.hotel.dao.entity.HotelRoom;
+import com.github.cotrod.hotel.dao.repository.HotelRoomRepository;
 import com.github.cotrod.hotel.model.HotelRoomDTO;
 import com.github.cotrod.hotel.model.RoomType;
-import org.hibernate.Session;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = DaoConfig.class)
+@Transactional
 class DefaultHotelRoomDaoTest {
+    @Autowired
+    HotelRoomDao roomDao;
+    @Autowired
+    HotelRoomRepository repository;
+
     @BeforeAll
     static void createDB() {
         HotelRoom hotelRoom = new HotelRoom();
         hotelRoom.setType(RoomType.STANDARD);
         hotelRoom.setAmountOfRooms(2);
         hotelRoom.setQuantity(5);
-        Session session = EMUtil.getEntityManager().getSession();
-        session.beginTransaction();
-        session.save(hotelRoom);
-        session.getTransaction().commit();
-        session.close();
     }
 
     @Test
     void getRooms() {
-        List<HotelRoomDTO> rooms = DefaultHotelRoomDao.getInstance().getRooms();
+        HotelRoom hotelRoom = new HotelRoom();
+        hotelRoom.setType(RoomType.STANDARD);
+        hotelRoom.setAmountOfRooms(2);
+        hotelRoom.setQuantity(5);
+        repository.save(hotelRoom);
+
+        List<HotelRoomDTO> rooms = roomDao.getRooms();
         assertNotNull(rooms);
+        assertEquals(1, rooms.size());
     }
 
     @Test
     void getRoomById() {
-        HotelRoomDTO roomDTO = DefaultHotelRoomDao.getInstance().getRoomById(1L);
+        HotelRoom hotelRoom = new HotelRoom();
+        hotelRoom.setType(RoomType.STANDARD);
+        hotelRoom.setAmountOfRooms(2);
+        hotelRoom.setQuantity(5);
+        repository.save(hotelRoom);
+        HotelRoomDTO roomDTO = roomDao.getRoomById(1L);
         assertNotNull(roomDTO);
-    }
-
-    @AfterAll
-    static void clear() {
-        EntityManager em = EMUtil.getEntityManager();
-        if (em != null) {
-            em.close();
-        }
     }
 }
