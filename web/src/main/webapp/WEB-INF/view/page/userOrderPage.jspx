@@ -1,11 +1,7 @@
 <jsp:root xmlns="http://www.w3.org/1999/xhtml"
           xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:c="http://java.sun.com/jsp/jstl/core"
-          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-          version="2.0">
-
-    <fmt:setLocale value="${locale}"/>
-    <fmt:setBundle basename="translations" var="msg"/>
+          version="2.0" xmlns:spring="http://www.springframework.org/tags">
 
     <style>
         table {
@@ -13,70 +9,72 @@
             border-collapse: collapse;
         }
 
-    fieldset {
-        text-align: -webkit-center;
-        margin-bottom: 15px;
-    }
+        fieldset {
+            text-align: -webkit-center;
+            margin-bottom: 15px;
+        }
 
-    td {
-        border-top: 1px solid black
-    }
-</style>
+        td {
+            border-top: 1px solid black
+        }
+    </style>
 
-<c:if test="${orderId<0}">
-    <p style="color:red"><fmt:message key="page.make.order.no.rooms" bundle="${msg}"/></p>
-</c:if>
+    <!--<c:if test="${orderId<0}">-->
+    <!--    <p style="color:red"><spring:message code="page.make.order.no.rooms"/></p>-->
+    <!--</c:if>-->
 
-<c:choose>
-    <c:when test="${not empty rooms}">
-        <div style="display: inline-block">
-            <form method="post">
-                <fieldset>
-                    <legend><fmt:message key="page.make.order.name.form" bundle="${msg}"/></legend>
-                    <p><label for="dateIn"><fmt:message key="table.order.date.in" bundle="${msg}"/></label> <input
-                            required="required" type="date" name="dateIn" id="dateIn"/>
-                    </p>
-                    <p><label for="dateOut"><fmt:message key="table.order.date.out" bundle="${msg}"/></label> <input
-                            required="required" type="date" name="dateOut"
-                            id="dateOut"/>
-                    </p>
-                    <table>
-                        <tr>
-                            <th><fmt:message key="table.order.choice" bundle="${msg}"/></th>
-                            <th><fmt:message key="table.order.type" bundle="${msg}"/></th>
-                            <th><fmt:message key="table.order.amount" bundle="${msg}"/></th>
-                            <th><fmt:message key="table.order.quantity" bundle="${msg}"/></th>
-                        </tr>
-                        <c:forEach var="room" items="${rooms}">
+    <c:choose>
+        <c:when test="${not empty rooms}">
+            <div style="display: inline-block">
+                <form method="post" action="${pageContext.request.contextPath}/user/order">
+                    <fieldset>
+                        <legend><spring:message code="page.make.order.name.form"/></legend>
+                        <p><label for="dateIn"><spring:message code="table.order.date.in"/></label> <input
+                                required="required" type="date" name="dateIn" id="dateIn"/>
+                        </p>
+                        <p><label for="dateOut"><spring:message code="table.order.date.out"/></label> <input
+                                required="required" type="date" name="dateOut"
+                                id="dateOut"/>
+                        </p>
+                        <table>
                             <tr>
-                                <td><input type="radio" required="required" name="roomId" value="${room.id}"/></td>
-                                <td><c:choose><c:when test="${room.type == 'STANDARD'}"><fmt:message
-                                        key="order.room.type.standard" bundle="${msg}"/></c:when>
-                                    <c:when test="${room.type == 'DELUXE'}"><fmt:message key="order.room.type.deluxe"
-                                                                                         bundle="${msg}"/></c:when>
-                                    <c:when test="${room.type == 'STUDIO'}"><fmt:message key="order.room.type.studio"
-                                                                                         bundle="${msg}"/></c:when></c:choose>
-                                </td>
-                                <td>${room.amountOfRooms}</td>
-                                <td>${room.quantity}</td>
+                                <th><spring:message code="table.order.choice"/></th>
+                                <th><spring:message code="table.order.type"/></th>
+                                <th><spring:message code="table.order.amount"/></th>
+                                <th><spring:message code="table.order.quantity"/></th>
                             </tr>
-                        </c:forEach>
-                    </table>
-                </fieldset>
-                <input type="submit" value="<fmt:message key='btn.submit' bundle='${msg}'/>"/> <input type="reset"
-                                                                                                      value="<fmt:message key='btn.reset' bundle='${msg}'/>"/>
-            </form>
+                            <c:forEach var="room" items="${rooms}">
+                                <tr>
+                                    <td><input type="radio" required="required" name="roomId" value="${room.id}"/></td>
+                                    <td><c:choose><c:when test="${room.type == 'STANDARD'}"><spring:message
+                                            code="order.room.type.standard"/></c:when>
+                                        <c:when test="${room.type == 'DELUXE'}"><spring:message
+                                                code="order.room.type.deluxe"/></c:when>
+                                        <c:when test="${room.type == 'STUDIO'}"><spring:message
+                                                code="order.room.type.studio"/></c:when></c:choose>
+                                    </td>
+                                    <td>${room.amountOfRooms}</td>
+                                    <td>${room.quantity}</td>
+                                </tr>
+                            </c:forEach>
+                        </table>
+                    </fieldset>
+                    <spring:message code='btn.submit' var="btnSubmit"/>
+                    <input type="submit" value="${btnSubmit}"/>
+                    <spring:message code='btn.reset' var="btnReset"/>
+                    <input type="reset" value="${btnReset}"/>
+                </form>
         </div>
     </c:when>
     <c:when test="${empty rooms}">
         <c:if test="${empty orderId}">
-            <p><fmt:message key="page.make.order.no.rooms" bundle="${msg}"/></p>
+            <p><spring:message code="page.make.order.no.rooms"/></p>
         </c:if>
     </c:when>
 
 </c:choose>
 
-    <p><a href="${pageContext.request.contextPath}/profile/user/home"><fmt:message key="to.page.home" bundle="${msg}"/></a>
+    <p><a href="${pageContext.request.contextPath}/user"><spring:message code="to.page.home"/></a>
     </p>
-    <p><a href="${pageContext.request.contextPath}/logout"><fmt:message key="to.logout" bundle="${msg}"/></a></p>
+    <p><a href="${pageContext.request.contextPath}/logout"><spring:message code="to.logout"/></a></p>
 </jsp:root>

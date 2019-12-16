@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?> <!--Нужна ли эта строка?-->
+<html xmlns:jsp="http://java.sun.com/JSP/Page"
+      xmlns:tiles="http://tiles.apache.org/tags-tiles" xmlns:spring="http://www.springframework.org/tags">
+
+    <jsp:output doctype-public="-//W3C//DTD XHTML 1.1//EN"
+                doctype-system="http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"
+                doctype-root-element="html" omit-xml-declaration="false"/>
+    <jsp:directive.page pageEncoding="UTF-8" contentType="text/html; UTF-8"/>
+
+    <head>
+        <title>
+            <tiles:getAsString name="title"/>
+        </title>
+    </head>
+    <body>
+        <h1>
+            <spring:message code="page.settings"/>
+        </h1>
+        <tiles:insertAttribute name="language"/>
+        <tiles:insertAttribute name="set1"/>
+        <p>
+            <a href="${pageContext.request.contextPath}/user">
+                <spring:message code="to.page.home"/>
+            </a>
+        </p>
+        <p>
+            <a href="${pageContext.request.contextPath}/logout">
+                <spring:message code="to.logout"/>
+            </a>
+        </p>
+    </body>
+</html>

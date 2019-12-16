@@ -16,18 +16,6 @@ public class ServiceFilter implements Filter {
         req.setCharacterEncoding("UTF-8");
         resp.setCharacterEncoding("UTF-8");
 
-        String locale = req.getParameter("locale");
-
-        if (locale==null){
-            locale = (String) req.getSession().getAttribute("locale");
-            if (locale==null) {
-                req.getSession().setAttribute("locale", "ru_RU");
-            }
-        }else {
-            req.getSession().setAttribute("locale", locale);
-        }
-
-
         filterChain.doFilter(req,resp);
     }
 }

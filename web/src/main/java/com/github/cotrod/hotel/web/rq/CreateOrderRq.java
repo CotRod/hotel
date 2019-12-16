@@ -1,10 +1,14 @@
 package com.github.cotrod.hotel.web.rq;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 
 public class CreateOrderRq {
     private Long roomId;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dateIn;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dateOut;
 
     public Long getRoomId() {

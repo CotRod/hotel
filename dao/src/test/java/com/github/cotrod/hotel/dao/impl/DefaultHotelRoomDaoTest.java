@@ -6,7 +6,6 @@ import com.github.cotrod.hotel.dao.entity.HotelRoom;
 import com.github.cotrod.hotel.dao.repository.HotelRoomRepository;
 import com.github.cotrod.hotel.model.HotelRoomDTO;
 import com.github.cotrod.hotel.model.RoomType;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +26,6 @@ class DefaultHotelRoomDaoTest {
     HotelRoomDao roomDao;
     @Autowired
     HotelRoomRepository repository;
-
-    @BeforeAll
-    static void createDB() {
-        HotelRoom hotelRoom = new HotelRoom();
-        hotelRoom.setType(RoomType.STANDARD);
-        hotelRoom.setAmountOfRooms(2);
-        hotelRoom.setQuantity(5);
-    }
 
     @Test
     void getRooms() {

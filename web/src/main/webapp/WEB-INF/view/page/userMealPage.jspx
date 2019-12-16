@@ -1,10 +1,6 @@
 <jsp:root xmlns="http://www.w3.org/1999/xhtml"
           xmlns:jsp="http://java.sun.com/JSP/Page"
-          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-          version="2.0">
-
-    <fmt:setLocale value="${locale}"/>
-    <fmt:setBundle basename="translations" var="msg"/>
+          version="2.0" xmlns:spring="http://www.springframework.org/tags">
 
     <style>
         table {
@@ -22,9 +18,10 @@
         }
     </style>
 
-    <p style="color:green"><fmt:message key="page.make.order.success" bundle="${msg}"/></p>
+    <p style="color:green"><spring:message code="page.make.order.success"/></p>
     <h2>Выбирите тип питания</h2>
-    <form method="post">
+    <form method="post" action="${pageContext.request.contextPath}/user/meal">
+        <input type="hidden" name="orderId" value="${orderId}"/>
         <input type="checkbox" name="meals" value="BREAKFAST" id="check1"/><label for="check1">Завтрак</label><Br/>
         <input type="checkbox" name="meals" value="LUNCH" id="check2"/><label for="check2">Обед</label><Br/>
         <input type="checkbox" name="meals" value="DINNER" id="check3"/><label for="check3">Ужин</label><Br/>
@@ -32,7 +29,7 @@
     </form>
 
 
-    <p><a href="${pageContext.request.contextPath}/profile/user/home"><fmt:message key="to.page.home" bundle="${msg}"/></a>
+    <p><a href="${pageContext.request.contextPath}/user"><spring:message code="to.page.home"/></a>
     </p>
-    <p><a href="${pageContext.request.contextPath}/logout"><fmt:message key="to.logout" bundle="${msg}"/></a></p>
+    <p><a href="${pageContext.request.contextPath}/logout"><spring:message code="to.logout"/></a></p>
 </jsp:root>

@@ -9,18 +9,18 @@ import com.github.cotrod.hotel.web.rq.ChangePasswordRq;
 import com.github.cotrod.hotel.web.rq.CreateMealRq;
 import com.github.cotrod.hotel.web.rq.CreateOrderRq;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.github.cotrod.hotel.web.WebUtils.setPageNumber;
+import static com.github.cotrod.hotel.web.WebUtils.getPage;
 
 @Controller
 @RequestMapping("/user")
@@ -40,23 +40,14 @@ public class UserController {
     // ************* Home *************
 
     @GetMapping
-    public String userHome(ModelMap modelMap, SecurityContext securityContext) {
-        Integer page;
-        if (modelMap.containsAttribute("pageNum")) {
-            page = (Integer) modelMap.getAttribute("pageNum");
-        } else {
-            page = 0;
-            modelMap.addAttribute("pageNum", page);
-        }
-        Long userId = ((UserDTO) securityContext.getAuthentication().getPrincipal()).getId();
-        List<OrderDTO> orders = orderService.getOrders(userId, page);
+    public String userHome(HttpServletRequest req, ModelMap modelMap, UsernamePasswordAuthenticationToken principal) {
+        Integer page = getPage(req);
+        UserDTO user = ((UserDTO) principal.getPrincipal());
+        List<OrderDTO> orders = orderService.getOrders(user.getId(), page);
         modelMap.addAttribute("orders", orders);
-        return "userHome";
-    }
-
-    @PostMapping
-    public String userHome(ModelMap modelMap) {
-        setPageNumber(modelMap);
+        modelMap.addAttribute("notLast", orderService.isNotLastPage(user.getId(), page));
+        modelMap.addAttribute("user", user);
+        modelMap.addAttribute("pageNum", page);
         return "userHome";
     }
 
@@ -70,29 +61,29 @@ public class UserController {
     }
 
     @PostMapping("/order")
-    public String order(CreateOrderRq orderRq, UsernamePasswordAuthenticationToken authentication, ModelMap modelMap) {
+    public String order(CreateOrderRq orderRq, UsernamePasswordAuthenticationToken principal, ModelMap modelMap) {
         Long roomId = orderRq.getRoomId();
-        Long clientId = ((UserDTO) authentication.getPrincipal()).getId();
+        Long clientId = ((UserDTO) principal.getPrincipal()).getId();
         LocalDate dateIn = orderRq.getDateIn();
         LocalDate dateOut = orderRq.getDateOut();
         OrderCreateDTO order = new OrderCreateDTO(roomId, clientId, dateIn, dateOut);
         Long orderId = orderService.makeOrder(order);
-        modelMap.addAttribute("orderId", orderId); //todo
+        modelMap.addAttribute("orderId", orderId);
         return "userMeal";
     }
 
     // ************* Meal *************
 
     @PostMapping("/meal")
-    public String meal(ModelMap modelMap, CreateMealRq mealRq) {
+    public String meal(CreateMealRq mealRq) {
+        Long orderId = mealRq.getOrderId();
+        if (orderId == null) {
+            return "redirect:/user/order";
+        }
         if (mealRq.getMeals() == null) {
             return "userMeal";
         }
         String[] meals = mealRq.getMeals();
-        Long orderId = (Long) modelMap.getAttribute("orderId");
-        if (orderId == null) {
-            return "redirect:/order";
-        }
         Arrays.stream(meals).forEach(meal -> mealService.addMealToOrder(orderId, meal));
         return "redirect:/user";
     }
@@ -105,8 +96,8 @@ public class UserController {
     }
 
     @PostMapping("/changePassword")
-    public String changePassword(ChangePasswordRq passwordRq, UsernamePasswordAuthenticationToken auth, ModelMap modelMap) {
-        long id = ((UserDTO) auth.getPrincipal()).getId();
+    public String changePassword(ChangePasswordRq passwordRq, UsernamePasswordAuthenticationToken principal, ModelMap modelMap) {
+        long id = ((UserDTO) principal.getPrincipal()).getId();
         String oldPassword = passwordRq.getOldPassword();
         String newPassword1 = passwordRq.getNewPassword1();
         String newPassword2 = passwordRq.getNewPassword2();

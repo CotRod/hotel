@@ -5,22 +5,24 @@ import com.github.cotrod.hotel.model.UserDTO;
 import com.github.cotrod.hotel.model.UserLoginDTO;
 import com.github.cotrod.hotel.model.UserSignupDTO;
 import com.github.cotrod.hotel.service.UserService;
+import com.github.cotrod.hotel.web.rq.LoginRq;
+import com.github.cotrod.hotel.web.rq.SignupRq;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
+
+import static com.github.cotrod.hotel.web.WebUtils.getAuthorities;
+import static com.github.cotrod.hotel.web.WebUtils.isUserNotAuth;
 
 @Controller
 @RequestMapping
@@ -34,29 +36,28 @@ public class CommonController {
 
 // ************* Login *************
 
-    @GetMapping(path = {"/", "/login"})
-    public String login(SecurityContext securityContext) {
-        Authentication authentication = securityContext.getAuthentication();
-        if (authentication == null) {
+    @GetMapping(path = {"/login", "/"})
+    public String login() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (isUserNotAuth(authentication)) {
             return "login";
         }
-        return "redirect:/home"; // TODO: 10.12.2019
+        return "redirect:/home";
     }
 
-    @PostMapping("/login")
-    public String login(HttpServletRequest req, SecurityContext securityContext) {
-        UserDTO userDTO = new UserDTO();
-        String login = req.getParameter("login");
-        String password = req.getParameter("password");
+    @PostMapping(path = {"/login", "/"})
+    public String login(LoginRq req, ModelMap modelMap) {
+        String login = req.getLogin();
+        String password = req.getPassword();
         UserLoginDTO userLogin = new UserLoginDTO(login, password);
-        userDTO = userService.getUser(userLogin);
+        UserDTO user = userService.getUser(userLogin);
 
-        if (userDTO != null) {
-            Authentication auth = new UsernamePasswordAuthenticationToken(userDTO, null, getAuthorities(userDTO));
-            securityContext.setAuthentication(auth);
-            return "redirect:/home"; // TODO: 10.12.2019
+        if (user != null) {
+            Authentication auth = new UsernamePasswordAuthenticationToken(user, null, getAuthorities(user));
+            SecurityContextHolder.getContext().setAuthentication(auth);
+            return "redirect:/home";
         } else {
-            req.setAttribute("error", true);
+            modelMap.addAttribute("error", true);
             log.warn("user {} couldn't log in with password {}", login, password);
             return "login";
         }
@@ -65,30 +66,30 @@ public class CommonController {
 // ************* Signup *************
 
     @GetMapping("/signup")
-    public String signup(SecurityContext securityContext) {
-        Authentication authentication = securityContext.getAuthentication();
-        if (authentication == null) {
+    public String signup() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (isUserNotAuth(authentication)) {
             return "signup";
         }
-        return "redirect:/home"; // TODO: 10.12.2019
+        return "redirect:/home";
     }
 
     @PostMapping("/signup")
-    public String signup(HttpServletRequest req, SecurityContext securityContext) {
-        String login = req.getParameter("login");
-        String password = req.getParameter("password");
-        String firstName = req.getParameter("firstName");
-        String lastName = req.getParameter("lastName");
+    public String signup(SignupRq req, ModelMap modelMap) {
+        String login = req.getLogin();
+        String password = req.getPassword();
+        String firstName = req.getFirstName();
+        String lastName = req.getLastName();
         UserSignupDTO userSignup = new UserSignupDTO(login, password, firstName, lastName);
         UserDTO userDTO = userService.saveUser(userSignup);
         if (userDTO == null) {
-            req.setAttribute("error", true);
+            modelMap.addAttribute("error", true);
             log.warn("user {} couldn't signup", login);
             return "signup";
         } else {
             Authentication auth = new UsernamePasswordAuthenticationToken(userDTO, null, getAuthorities(userDTO));
-            securityContext.setAuthentication(auth);
-            return "redirect:/home"; // TODO: 10.12.2019
+            SecurityContextHolder.getContext().setAuthentication(auth);
+            return "redirect:/home";
         }
     }
 
@@ -100,6 +101,8 @@ public class CommonController {
         try {
             req.logout();
         } catch (ServletException e) {
+            log.error("Logout exception  user id - {}",
+                    ((UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId());
             throw new RuntimeException(e);
         }
         return "redirect:/login";
@@ -115,12 +118,5 @@ public class CommonController {
         } else {
             return "redirect:/admin";
         }
-    }
-
-    private List<GrantedAuthority> getAuthorities(UserDTO userDTO) {
-        String role = "ROLE_" + userDTO.getRole().name();
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add((GrantedAuthority) () -> role);
-        return grantedAuthorities;
     }
 }

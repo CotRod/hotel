@@ -3,12 +3,18 @@
         "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
         "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
 <tiles-definitions>
+    <!--    templates   -->
     <definition name="default" template="/WEB-INF/view/layout/default.jspx">
         <put-attribute name="title" value=""/>
-        <put-attribute name="language" value="/WEB-INF/view/common/LanguageSubPage.jspx"/>
-        <put-attribute name="body" value=""/>
+        <put-attribute name="language" value="/WEB-INF/view/common/languageSubPage.jspx"/>
     </definition>
 
+    <definition name="settings" template="/WEB-INF/view/layout/settings.jspx">
+        <put-attribute name="title" value=""/>
+        <put-attribute name="language" value="/WEB-INF/view/common/languageSubPage.jspx"/>
+        <put-attribute name="set1" value=""/>
+    </definition>
+    <!--    pages   -->
     <definition name="login" extends="default">
         <put-attribute name="title" value="Login"/>
         <put-attribute name="body" value="/WEB-INF/view/page/login.jspx"/>
@@ -39,9 +45,8 @@
         <put-attribute name="body" value="/WEB-INF/view/page/userOrderPage.jspx"/>
     </definition>
 
-    <definition name="userSettings" extends="default">
+    <definition name="userSettings" extends="settings">
         <put-attribute name="title" value="Settings"/>
-        <put-attribute name="body" value="/WEB-INF/view/page/userSettings.jspx"/>
         <put-attribute name="set1" value="/WEB-INF/view/common/changePassword.jspx"/>
     </definition>
 

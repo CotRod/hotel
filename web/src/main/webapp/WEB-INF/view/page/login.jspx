@@ -1,24 +1,24 @@
 <jsp:root xmlns="http://www.w3.org/1999/xhtml"
           xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:c="http://java.sun.com/jsp/jstl/core"
-          xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-          version="2.0">
+          version="2.0" xmlns:spring="http://www.springframework.org/tags">
 
-    <fmt:setLocale value="${locale}"/>
-    <fmt:setBundle basename="translations" var="messages"/>
 
-    <h2><fmt:message key="page.login.log.in" bundle="${messages}"/></h2>
+    <h2><spring:message code="page.login.log.in"/></h2>
     <form method="post">
-        <input type="text" required="required" placeholder="<fmt:message key='placeholder.login' bundle='${messages}'/>"
+        <spring:message code='placeholder.login' var="plcLogin"/>
+        <input type="text" required="required" placeholder="${plcLogin}"
                name="login"/>
+        <spring:message code='placeholder.password' var="plcPassword"/>
         <input type="password" required="required"
-               placeholder="<fmt:message key='placeholder.password' bundle='${messages}'/>"
+               placeholder="${plcPassword}"
                name="password"/>
-        <input type="submit" value="<fmt:message key='page.login.log.in' bundle='${messages}'/>"/>
+        <spring:message code='page.login.log.in' var="logIn"/>
+        <input type="submit" value="${logIn}"/>
     </form>
     <c:if test="${error}">
-        <p style="color:red"><fmt:message key="page.login.error" bundle="${messages}"/></p>
+        <p style="color:red"><spring:message code="page.login.error"/></p>
     </c:if>
-    <p><a href="${pageContext.request.contextPath}/signup"><fmt:message key="to.page.signup" bundle="${messages}"/></a>
+    <p><a href="${pageContext.request.contextPath}/signup"><spring:message code="to.page.signup"/></a>
     </p>
 </jsp:root>
