@@ -10,10 +10,9 @@ import com.github.cotrod.hotel.model.OrderDTO;
 import com.github.cotrod.hotel.model.RoomType;
 import com.github.cotrod.hotel.model.UserSignupDTO;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -21,7 +20,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
+@DataJpaTest
 @ContextConfiguration(classes = DaoConfig.class)
 @Transactional
 class DefaultOrderDaoTest {

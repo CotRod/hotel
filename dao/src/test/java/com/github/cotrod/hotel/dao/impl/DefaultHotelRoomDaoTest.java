@@ -7,10 +7,9 @@ import com.github.cotrod.hotel.dao.repository.HotelRoomRepository;
 import com.github.cotrod.hotel.model.HotelRoomDTO;
 import com.github.cotrod.hotel.model.RoomType;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@ExtendWith(SpringExtension.class)
+@DataJpaTest
 @ContextConfiguration(classes = DaoConfig.class)
 @Transactional
 class DefaultHotelRoomDaoTest {

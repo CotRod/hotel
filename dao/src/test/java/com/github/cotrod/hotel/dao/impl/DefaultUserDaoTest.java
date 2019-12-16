@@ -6,17 +6,16 @@ import com.github.cotrod.hotel.model.Role;
 import com.github.cotrod.hotel.model.UserDTO;
 import com.github.cotrod.hotel.model.UserSignupDTO;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
+@DataJpaTest
 @ContextConfiguration(classes = DaoConfig.class)
 @Transactional
 public class DefaultUserDaoTest {
