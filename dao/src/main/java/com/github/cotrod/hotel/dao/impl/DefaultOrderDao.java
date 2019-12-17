@@ -11,13 +11,13 @@ import com.github.cotrod.hotel.dao.repository.OrderRepository;
 import com.github.cotrod.hotel.model.Decision;
 import com.github.cotrod.hotel.model.OrderCreateDTO;
 import com.github.cotrod.hotel.model.OrderDTO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import static com.github.cotrod.hotel.dao.converter.OrderConverter.toEntity;
 
@@ -26,6 +26,8 @@ public class DefaultOrderDao implements OrderDao {
     private final OrderRepository orderRepository;
     private final ClientRepository clientRepository;
     private final HotelRoomRepository roomRepository;
+    @Value("${amount-of-orders-on-page}")
+    Integer amountOfOrdersOnPage;
 
     public DefaultOrderDao(OrderRepository orderRepository, ClientRepository clientRepository, HotelRoomRepository roomRepository) {
         this.orderRepository = orderRepository;
@@ -63,8 +65,6 @@ public class DefaultOrderDao implements OrderDao {
     }
 
     private Page<Order> getPage(Long userId, int page) {
-        ResourceBundle resource = ResourceBundle.getBundle("const");
-        int amountOfOrdersOnPage = Integer.parseInt(resource.getString("amountOfOrdersOnPage"));
         Page<Order> ordersPage;
         if (userId == 0) {
             ordersPage = orderRepository.findAll(PageRequest.of(page, amountOfOrdersOnPage));

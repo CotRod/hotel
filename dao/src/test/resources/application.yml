@@ -1,0 +1,11 @@
+server.port: 8081
+spring:
+  datasource:
+    url: jdbc:h2:mem:jpadb
+    username: root
+    password:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+amount-of-orders-on-page: 3

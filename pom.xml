@@ -31,18 +31,22 @@
     </properties>
 
     <dependencies>
+<!--        Starter for using Spring Data JPA with Hibernate-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+        <!--        Starter for using Spring Security-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+        <!--        Starter for building web, including RESTful, applications using Spring MVC. Uses Tomcat as the default embedded container-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!--        Starter for testing Spring Boot applications with libraries including JUnit, Hamcrest and Mockito-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

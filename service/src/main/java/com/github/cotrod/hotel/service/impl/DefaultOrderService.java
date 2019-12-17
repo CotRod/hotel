@@ -34,7 +34,6 @@ public class DefaultOrderService implements OrderService {
         return -1L;
     }
 
-    //todo
     @Override
     @Transactional
     public List<OrderDTO> getOrders(Long userId, Integer page) {
@@ -50,6 +49,6 @@ public class DefaultOrderService implements OrderService {
     @Override
     @Transactional
     public boolean isNotLastPage(Long userId, int page) {
-        return !orderDao.isLastPage(userId, page); //todo
+        return !orderDao.isLastPage(userId, page);
     }
 }

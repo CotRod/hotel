@@ -10,11 +10,10 @@ spring:
       ddl-auto: validate
 
 
-spring.view.prefix: /WEB-INF/view/layouts
-spring.view.suffix: .jspx
 server:
   servlet:
     context-path: /
 
-debug: true
-trace: true
+amount-of-orders-on-page: 3
+
+
