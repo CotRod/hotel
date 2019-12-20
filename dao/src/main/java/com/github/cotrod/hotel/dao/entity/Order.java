@@ -84,7 +84,7 @@ public class Order implements Serializable {
         this.hotelRoom = hotelRoom;
     }
 
-    @ManyToMany(mappedBy = "orders", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "orders")
     public List<Meal> getMeals() {
         return meals;
     }

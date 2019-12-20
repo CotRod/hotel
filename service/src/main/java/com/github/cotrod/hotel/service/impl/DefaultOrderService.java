@@ -51,4 +51,10 @@ public class DefaultOrderService implements OrderService {
     public boolean isNotLastPage(Long userId, int page) {
         return !orderDao.isLastPage(userId, page);
     }
+
+    @Override
+    @Transactional
+    public void deleteOrder(Long orderId) {
+        orderDao.deleteOrder(orderId);
+    }
 }

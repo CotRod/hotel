@@ -14,4 +14,6 @@ public interface OrderService {
     void updateDecision(Long id, Decision decision);
 
     boolean isNotLastPage(Long userId, int page);
+
+    void deleteOrder(Long orderId);
 }

@@ -23,5 +23,6 @@ public class DefaultMealDao implements MealDao {
         order.getMeals().add(meal);
         meal.getOrders().add(order);
         orderRepository.save(order);
+        mealRepository.save(meal);
     }
 }

@@ -12,83 +12,88 @@
         td {
             padding: 10px;
             border-top: 1px solid black
-    }
+        }
 
-    .navigation {
-        float: left;
-        margin: 15px;
-    }
-</style>
-<h2>Hello administrator, ${user.login}!</h2>
-<h2>Привет администратор, ${user.firstName}!</h2>
-<c:if test="${not empty orders}">
-    <div>
-        <table>
-            <tr>
-                <th><spring:message code="table.order.date.in"/></th>
-                <th><spring:message code="table.order.date.out"/></th>
-                <th>Login</th>
-                <th><spring:message code="table.order.type"/></th>
-                <th><spring:message code="table.order.amount"/></th>
-                <th><spring:message code="table.order.decision"/></th>
-                <th></th>
-            </tr>
-            <c:forEach var="order" items="${orders}">
-                <form method="post" id="${order.orderId}"
-                      action="${pageContext.request.contextPath}/admin/changeDecision">
-                    <tr>
-                        <td>${order.dateIn}</td>
-                        <td>${order.dateOut}</td>
-                        <td>${order.login}</td>
-                        <td><c:choose><c:when test="${order.type == 'STANDARD'}"><spring:message
-                                code="order.room.type.standard"/></c:when>
-                            <c:when test="${order.type == 'DELUXE'}"><spring:message code="order.room.type.deluxe"
-                            /></c:when>
-                            <c:when test="${order.type == 'STUDIO'}"><spring:message code="order.room.type.studio"
-                            /></c:when></c:choose>
-                        </td>
-                        <td>${order.amountOfRooms}</td>
-                        <td>
-                            <select form="${order.orderId}" name="decision" required="required">
-                                <option value="${order.decision.toString()}" hidden="hidden">
-                                    <c:choose><c:when test="${order.decision == 'AWAITING'}"><spring:message
-                                            code="order.room.decision.awaiting"/></c:when>
-                                        <c:when test="${order.decision == 'APPROVED'}"><spring:message
-                                                code="order.room.decision.approved"/></c:when></c:choose>
-                                </option>
-                                <option value="AWAITING"><spring:message code="order.room.decision.awaiting"/></option>
-                                <option value="APPROVED"><spring:message code="order.room.decision.approved"/></option>
-                            </select>
-                        </td>
-                        <td>
-                            <button type="submit" name="orderId" value="${order.orderId}">
-                                <spring:message code="btn.change"/>
-                            </button>
-                        </td>
-                    </tr>
-                </form>
-            </c:forEach>
-        </table>
-    </div>
-</c:if>
-    <div style="overflow: auto">
-        <div style="margin-left: 140px;">
-            <c:if test="${pageNum>0}">
-                <div class="navigation">
-                    <!--                <button type="submit" formmethod="post" name="nav" value="prev">&lt;&lt;</button>-->
-                    <a href="${requestScope['javax.servlet.forward.request_uri']}?pageNum=${pageNum-1}">&lt;&lt;</a>
+        .navigation {
+            float: left;
+            margin: 15px;
+        }
+    </style>
+    <h2>Hello administrator, ${user.login}!</h2>
+    <h2>Привет администратор, ${user.firstName}!</h2>
 
-                </div>
-            </c:if>
-            <div class="navigation"><p>${pageNum + 1}</p></div>
-            <c:if test="${notLast}">
-                <div class="navigation">
-                    <!--                <button type="submit" formmethod="post" name="nav" value="next">&gt;&gt;</button>-->
-                    <a href="${requestScope['javax.servlet.forward.request_uri']}?pageNum=${pageNum+1}">&gt;&gt;</a>
-
-                </div>
-            </c:if>
+    <p><a href="${pageContext.request.contextPath}/admin/userList"><spring:message code="to.user.list"/></a></p>
+    <c:if test="${not empty orders}">
+        <div>
+            <table>
+                <tr>
+                    <th><spring:message code="table.order.date.in"/></th>
+                    <th><spring:message code="table.order.date.out"/></th>
+                    <th>Login</th>
+                    <th><spring:message code="table.order.type"/></th>
+                    <th><spring:message code="table.order.amount"/></th>
+                    <th><spring:message code="table.order.decision"/></th>
+                    <th></th>
+                </tr>
+                <c:forEach var="order" items="${orders}">
+                    <form method="post" id="${order.orderId}"
+                          action="${pageContext.request.contextPath}/admin/changeDecision">
+                        <tr>
+                            <td>${order.dateIn}</td>
+                            <td>${order.dateOut}</td>
+                            <td>${order.login}</td>
+                            <td><c:choose><c:when test="${order.type == 'STANDARD'}"><spring:message
+                                    code="order.room.type.standard"/></c:when>
+                                <c:when test="${order.type == 'DELUXE'}"><spring:message code="order.room.type.deluxe"
+                                /></c:when>
+                                <c:when test="${order.type == 'STUDIO'}"><spring:message code="order.room.type.studio"
+                                /></c:when></c:choose>
+                            </td>
+                            <td>${order.amountOfRooms}</td>
+                            <td>
+                                <select form="${order.orderId}" name="decision" required="required">
+                                    <option value="${order.decision.toString()}" hidden="hidden">
+                                        <c:choose><c:when test="${order.decision == 'AWAITING'}"><spring:message
+                                                code="order.room.decision.awaiting"/></c:when>
+                                            <c:when test="${order.decision == 'APPROVED'}"><spring:message
+                                                    code="order.room.decision.approved"/></c:when></c:choose>
+                                    </option>
+                                    <option value="AWAITING"><spring:message code="order.room.decision.awaiting"/>
+                                    </option>
+                                    <option value="APPROVED"><spring:message code="order.room.decision.approved"/>
+                                    </option>
+                                </select>
+                            </td>
+                            <td>
+                                <button type="submit" name="orderId" value="${order.orderId}">
+                                    <spring:message code="btn.change"/>
+                                </button>
+                            </td>
+                        </tr>
+                    </form>
+                </c:forEach>
+            </table>
         </div>
-    </div>
+        <div style="overflow: auto">
+            <div style="margin-left: 140px;">
+                <c:if test="${pageNum>0}">
+                    <div class="navigation">
+                        <!--                <button type="submit" formmethod="post" name="nav" value="prev">&lt;&lt;</button>-->
+                        <a href="${requestScope['javax.servlet.forward.request_uri']}?pageNum=${pageNum-1}">&lt;&lt;</a>
+
+                    </div>
+                </c:if>
+                <div class="navigation"><p>${pageNum + 1}</p></div>
+                <c:if test="${notLast}">
+                    <div class="navigation">
+                        <!--                <button type="submit" formmethod="post" name="nav" value="next">&gt;&gt;</button>-->
+                        <a href="${requestScope['javax.servlet.forward.request_uri']}?pageNum=${pageNum+1}">&gt;&gt;</a>
+
+                    </div>
+                </c:if>
+            </div>
+        </div>
+    </c:if>
+
     <p><a href="${pageContext.request.contextPath}/logout"><spring:message code="to.logout"/></a></p>
 </jsp:root>

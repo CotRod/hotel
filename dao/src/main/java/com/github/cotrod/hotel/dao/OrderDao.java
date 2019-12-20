@@ -14,4 +14,6 @@ public interface OrderDao {
     void updateDecision(Long id, Decision decision);
 
     boolean isLastPage(Long userId, int page);
+
+    void deleteOrder(Long orderId);
 }

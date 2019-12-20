@@ -1,0 +1,21 @@
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:spring="http://www.springframework.org/tags"
+          version="2.0">
+    <c:if test="${not empty users}">
+        <form method="post" action="/admin/userList">
+            <ul>
+                <c:forEach var="user" items="${users}">
+                    <li><c:out value="${user.login}"/>
+                        <button type="submit" name="btn" value="${user.id}">X</button>
+                    </li>
+                </c:forEach>
+            </ul>
+        </form>
+    </c:if>
+
+    <p><a href="${pageContext.request.contextPath}/admin"><spring:message code="to.page.home"/></a>
+    </p>
+    <p><a href="${pageContext.request.contextPath}/logout"><spring:message code="to.logout"/></a></p>
+</jsp:root>

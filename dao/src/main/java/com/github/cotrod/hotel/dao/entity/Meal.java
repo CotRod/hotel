@@ -40,7 +40,7 @@ public class Meal {
         this.typeOfMeal = typeOfMeal;
     }
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "order_meal", joinColumns = {@JoinColumn(name = "meal_id")},
             inverseJoinColumns = {@JoinColumn(name = "order_id")})
     public List<Order> getOrders() {

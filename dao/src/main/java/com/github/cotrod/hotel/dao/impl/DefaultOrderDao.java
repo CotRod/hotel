@@ -85,4 +85,14 @@ public class DefaultOrderDao implements OrderDao {
         order.setDecision(decision);
         orderRepository.save(order);
     }
+
+    @Override
+    public void deleteOrder(Long orderId) {
+        Order order = orderRepository.getOne(orderId);
+        HotelRoom hotelRoom = order.getHotelRoom();
+        int quantity = hotelRoom.getQuantity();
+        hotelRoom.setQuantity(++quantity);
+        roomRepository.save(hotelRoom);
+        orderRepository.deleteById(orderId);
+    }
 }

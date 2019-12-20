@@ -14,8 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @ContextConfiguration(classes = DaoConfig.class)
@@ -45,8 +44,8 @@ class DefaultHotelRoomDaoTest {
         hotelRoom.setType(RoomType.STANDARD);
         hotelRoom.setAmountOfRooms(2);
         hotelRoom.setQuantity(5);
-        repository.save(hotelRoom);
-        HotelRoomDTO roomDTO = roomDao.getRoomById(1L);
-        assertNotNull(roomDTO);
+        HotelRoom room = repository.save(hotelRoom);
+        assertNotNull(roomDao.getRoomById(room.getId()));
+        assertNull(roomDao.getRoomById(-1L));
     }
 }

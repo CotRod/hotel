@@ -35,6 +35,8 @@ public class DefaultOrderServiceTest {
         when(roomDao.getRoomById(1L)).thenReturn(roomDTO);
         when(orderDao.makeOrder(createDTO)).thenReturn(1L);
         assertEquals(1L, service.makeOrder(createDTO));
+        when(roomDao.getRoomById(2L)).thenReturn(null);
+        assertEquals(-1L, service.makeOrder(new OrderCreateDTO(2L, 2L, LocalDate.now(), LocalDate.now())));
     }
 
     @Test

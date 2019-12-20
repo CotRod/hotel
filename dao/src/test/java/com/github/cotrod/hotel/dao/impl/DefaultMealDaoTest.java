@@ -30,10 +30,10 @@ class DefaultMealDaoTest {
     void addMealToOrder() {
         Meal meal = new Meal();
         meal.setTypeOfMeal(TypeOfMeal.BREAKFAST);
-        mealRepository.save(meal);
+        Meal mealFromDB = mealRepository.save(meal);
         Order order = new Order();
-        orderRepository.save(order);
-        dao.addMealToOrder(1L, TypeOfMeal.BREAKFAST);
-        assertEquals(1, orderRepository.getOne(1L).getMeals().size());
+        Order orderFromDB = orderRepository.save(order);
+        dao.addMealToOrder(orderFromDB.getId(), TypeOfMeal.BREAKFAST);
+        assertEquals(1, orderRepository.getOne(orderFromDB.getId()).getMeals().size());
     }
 }
